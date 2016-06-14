@@ -16,15 +16,29 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QFileDialog>
+#include <QMessageBox>
+#include <QStandardPaths>
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    connect(ui->actionOpen, SIGNAL(triggered()), SLOT(openFileDialog()));
     connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
+
+void MainWindow::openFileDialog()
+{
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), dir);
+    if (!fileName.isEmpty()) {
+        // TODO: Play file
+    }
 }
