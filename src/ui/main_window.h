@@ -16,6 +16,7 @@
 #ifndef MAIN_WINDOW_H_INCLUDED
 #define MAIN_WINDOW_H_INCLUDED
 
+#include <QFileDialog>
 #include <QMainWindow>
 
 #include <memory>
@@ -33,10 +34,13 @@ public:
     explicit Main_window(std::unique_ptr<Player> player, QWidget* parent = nullptr);
     ~Main_window();
 private slots:
-    void open_file_dialog();
+    void open_file();
+    void play();
+    void pause();
 private:
     Ui::MainWindow* ui;
     std::unique_ptr<Player> player;
+    QFileInfo current_song;
 };
 
 #endif

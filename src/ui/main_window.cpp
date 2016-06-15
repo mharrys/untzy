@@ -18,7 +18,6 @@
 
 #include "core/player.h"
 
-#include <QFileDialog>
 #include <QStandardPaths>
 
 Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
@@ -27,8 +26,18 @@ Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->action_open, SIGNAL(triggered()), SLOT(open_file_dialog()));
-    connect(ui->action_exit, SIGNAL(triggered()), SLOT(close()));
+
+    connect(ui->action_open,  &QAction::triggered, this, &Main_window::open_file);
+    connect(ui->action_play,  &QAction::triggered, this, &Main_window::play);
+    connect(ui->action_pause, &QAction::triggered, this, &Main_window::pause);
+    connect(ui->action_exit,  &QAction::triggered, this, &Main_window::close);
+
+    connect(this->player.get(), &Player::playing, [=]() {
+        ui->songLabel->setText("(Playing) " + current_song.baseName());
+    });
+    connect(this->player.get(), &Player::paused, [=]() {
+        ui->songLabel->setText("(Paused) " + current_song.baseName());
+    });
 }
 
 Main_window::~Main_window()
@@ -36,13 +45,23 @@ Main_window::~Main_window()
     delete ui;
 }
 
-void Main_window::open_file_dialog()
+void Main_window::open_file()
 {
-    QString dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    QString filename = QFileDialog::getOpenFileName(this, tr("Open"), dir);
+    auto dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
+    auto filename = QFileDialog::getOpenFileName(this, tr("Open File"), dir);
     if (!filename.isEmpty()) {
-        QUrl url = QUrl::fromLocalFile(QFileInfo(filename).absoluteFilePath());
+        current_song = QFileInfo(filename);
+        auto url = QUrl::fromLocalFile(current_song.absoluteFilePath());
         player->load(url);
-        player->play();
     }
+}
+
+void Main_window::play()
+{
+    player->play();
+}
+
+void Main_window::pause()
+{
+    player->pause();
 }
