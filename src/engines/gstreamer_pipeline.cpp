@@ -144,6 +144,8 @@ GStreamer_pipeline::~GStreamer_pipeline()
 
 void GStreamer_pipeline::set_uri(const std::string& uri)
 {
+    if (data.state >= GST_STATE_READY)
+        set_state(State::ready);
     g_object_set(data.source, "uri", uri.c_str(), NULL);
 }
 
