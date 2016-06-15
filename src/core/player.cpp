@@ -13,28 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "core/player.h"
-#include "engines/gstreamer_engine.h"
-#include "ui/main_window.h"
+#include "player.h"
 
-#include <QApplication>
-#include <QMessageBox>
+#include "engines/engine.h"
 
-#include <iostream>
-
-int main(int argc, char* argv[])
+Player::Player(QObject* parent)
+    : QObject(parent)
 {
-    auto engine = GStreamer_engine::make();
-    if (!engine) {
-        std::cerr << "untzy: Unable to create GStreamer engine.\n";
-        return 1;
-    }
-    auto player = std::make_unique<Player_impl>(std::move(engine));
+}
 
-    QApplication app(argc, argv);
+Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
+    : engine(std::move(engine)),
+      Player(parent)
+{
+}
 
-    Main_window main_window(player.get());
-    main_window.show();
+void Player_impl::load(QUrl const & url)
+{
+    engine->load(url.toString().toStdString());
+}
 
-    return app.exec();
+void Player_impl::play()
+{
+    engine->play();
+    emit playing();
+}
+
+void Player_impl::pause()
+{
+    engine->pause();
+    emit paused();
 }

@@ -13,25 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAINWINDOW_H_INCLUDED
-#define MAINWINDOW_H_INCLUDED
+#ifndef GSTREAMER_ENGINE_H_INCLUDED
+#define GSTREAMER_ENGINE_H_INCLUDED
 
-#include <QMainWindow>
+#include "gstreamer_pipeline.h"
+#include "engine.h"
 
-namespace Ui {
-class MainWindow;
-}
-
-class MainWindow : public QMainWindow
-{
-    Q_OBJECT
+// The responsibility of this class is to provide an interface to the
+// GStreamer multimedia framework.
+class GStreamer_engine : public Engine {
 public:
-    explicit MainWindow(QWidget *parent = nullptr);
-    ~MainWindow();
-private slots:
-    void openFileDialog();
+    // Create a simple audio engine.
+    static std::unique_ptr<GStreamer_engine> make();
+
+    // Prepare the pipeline with a local or remote URI.
+    void load(const std::string& uri) final;
+    // Start or continue playback.
+    void play() final;
+    // Pause playback.
+    void pause() final;
 private:
-    Ui::MainWindow *ui;
+    GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
+
+    std::unique_ptr<GStreamer_pipeline> pipeline;
 };
 
 #endif

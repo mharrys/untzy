@@ -13,32 +13,36 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
+#include "main_window.h"
+#include "ui_main_window.h"
+
+#include "core/player.h"
 
 #include <QFileDialog>
-#include <QMessageBox>
 #include <QStandardPaths>
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::MainWindow)
+Main_window::Main_window(Player* player, QWidget* parent)
+    : player(player),
+      QMainWindow(parent),
+      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    connect(ui->actionOpen, SIGNAL(triggered()), SLOT(openFileDialog()));
-    connect(ui->actionExit, SIGNAL(triggered()), SLOT(close()));
+    connect(ui->action_open, SIGNAL(triggered()), SLOT(open_file_dialog()));
+    connect(ui->action_exit, SIGNAL(triggered()), SLOT(close()));
 }
 
-MainWindow::~MainWindow()
+Main_window::~Main_window()
 {
     delete ui;
 }
 
-void MainWindow::openFileDialog()
+void Main_window::open_file_dialog()
 {
     QString dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open"), dir);
-    if (!fileName.isEmpty()) {
-        // TODO: Play file
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open"), dir);
+    if (!filename.isEmpty()) {
+        QUrl url = QUrl::fromLocalFile(QFileInfo(filename).absoluteFilePath());
+        player->load(url);
+        player->play();
     }
 }
