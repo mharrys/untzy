@@ -18,6 +18,8 @@
 
 #include <QMainWindow>
 
+#include <memory>
+
 class Player;
 
 namespace Ui {
@@ -28,13 +30,13 @@ class Main_window : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit Main_window(Player* player, QWidget* parent = nullptr);
+    explicit Main_window(std::unique_ptr<Player> player, QWidget* parent = nullptr);
     ~Main_window();
 private slots:
     void open_file_dialog();
 private:
     Ui::MainWindow* ui;
-    Player* player;
+    std::unique_ptr<Player> player;
 };
 
 #endif

@@ -21,8 +21,8 @@
 #include <QFileDialog>
 #include <QStandardPaths>
 
-Main_window::Main_window(Player* player, QWidget* parent)
-    : player(player),
+Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
+    : player(std::move(player)),
       QMainWindow(parent),
       ui(new Ui::MainWindow)
 {

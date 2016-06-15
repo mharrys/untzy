@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
     QApplication app(argc, argv);
 
-    Main_window main_window(player.get());
+    Main_window main_window(std::move(player));
     main_window.show();
 
     return app.exec();
