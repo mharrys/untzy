@@ -14,31 +14,6 @@
    <string>Untzy</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QLabel" name="songLabel">
-    <property name="geometry">
-     <rect>
-      <x>0</x>
-      <y>0</y>
-      <width>511</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="sizePolicy">
-     <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-      <horstretch>0</horstretch>
-      <verstretch>0</verstretch>
-     </sizepolicy>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>24</pointsize>
-      <italic>true</italic>
-     </font>
-    </property>
-    <property name="text">
-     <string>No song loaded.</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="dec_vol">
     <property name="geometry">
      <rect>

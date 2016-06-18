@@ -26,19 +26,13 @@ Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
       ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     connect(ui->action_open,  &QAction::triggered, this, &Main_window::open_file);
     connect(ui->action_play,  &QAction::triggered, this, &Main_window::play);
     connect(ui->action_pause, &QAction::triggered, this, &Main_window::pause);
     connect(ui->action_exit,  &QAction::triggered, this, &Main_window::close);
-
     connect(this->player.get(), &Player::playing, [=]() {
-        ui->songLabel->setText("(Playing) " + current_song.baseName());
+        setWindowTitle(current_song.baseName());
     });
-    connect(this->player.get(), &Player::paused, [=]() {
-        ui->songLabel->setText("(Paused) " + current_song.baseName());
-    });
-
     connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
     connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
 }
