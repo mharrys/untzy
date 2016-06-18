@@ -25,7 +25,7 @@ class Engine;
 class Volume;
 
 class Player : public QObject {
-  Q_OBJECT
+    Q_OBJECT
 public:
     explicit Player(QObject* parent = nullptr);
 public slots:
