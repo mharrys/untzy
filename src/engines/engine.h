@@ -22,6 +22,7 @@ public:
     virtual void load(const std::string& uri) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
+    virtual void set_volume(double level) = 0;
 };
 
 #endif

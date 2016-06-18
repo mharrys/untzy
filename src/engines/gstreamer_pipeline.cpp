@@ -112,6 +112,16 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make()
         g_printerr("gstreamer: Unable to create audioconvert.\n");
         return nullptr;
     }
+    data.volume = gst_element_factory_make("volume", "volume");
+    if (!data.volume) {
+        g_printerr("gstreamer: Unable to create volume.\n");
+        return nullptr;
+    }
+    data.level = gst_element_factory_make("level", "level");
+    if (!data.level) {
+        g_printerr("gstreamer: Unable to create level.\n");
+        return nullptr;
+    }
     data.sink = gst_element_factory_make("autoaudiosink", "sink");
     if (!data.sink) {
         g_printerr("gstreamer: Unable to create autoaudiosink.\n");
@@ -122,12 +132,21 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make()
         g_printerr("gstreamer: Unable to create new pipeline.\n");
         return nullptr;
     }
-    gst_bin_add_many(GST_BIN(data.pipeline), data.source, data.convert , data.sink, NULL);
-    if (!gst_element_link(data.convert, data.sink)) {
+    gst_bin_add_many(
+        GST_BIN(data.pipeline),
+        data.source,
+        data.convert,
+        data.volume,
+        data.level,
+        data.sink,
+        NULL);
+
+    if (!gst_element_link_many(data.convert, data.volume, data.level, data.sink, NULL)) {
         g_printerr("gstreamer: Unable to link elements in pipeline.\n");
         gst_object_unref(data.pipeline);
         return nullptr;
     }
+
     data.bus = gst_element_get_bus(data.pipeline);
     data.state = GST_STATE_NULL;
     return std::unique_ptr<GStreamer_pipeline>(
@@ -170,6 +189,11 @@ void GStreamer_pipeline::set_state(State state)
         g_printerr("gstreamer: Unable to set pipeline state.\n");
     else
         data.state = new_state;
+}
+
+void GStreamer_pipeline::set_volume(double level)
+{
+    g_object_set(data.volume, "volume", level, NULL);
 }
 
 GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data)

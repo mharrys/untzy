@@ -37,10 +37,13 @@ private slots:
     void open_file();
     void play();
     void pause();
+    void increase_volume();
+    void decrease_volume();
 private:
     Ui::MainWindow* ui;
     std::unique_ptr<Player> player;
     QFileInfo current_song;
+    double volume_level;
 };
 
 #endif

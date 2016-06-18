@@ -44,3 +44,8 @@ void Player_impl::pause()
     engine->pause();
     emit paused();
 }
+
+void Player_impl::set_volume(double level)
+{
+    engine->set_volume(level);
+}

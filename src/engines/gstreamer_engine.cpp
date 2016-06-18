@@ -50,6 +50,11 @@ void GStreamer_engine::pause()
     pipeline->set_state(GStreamer_pipeline::State::paused);
 }
 
+void GStreamer_engine::set_volume(double level)
+{
+    pipeline->set_volume(level);
+}
+
 GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
     : pipeline(std::move(pipeline))
 {

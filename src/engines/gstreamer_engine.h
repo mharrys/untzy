@@ -32,6 +32,8 @@ public:
     void play() final;
     // Pause playback.
     void pause() final;
+    // Set volume level. Expected values between 0.0 and 1.0.
+    void set_volume(double level);
 private:
     GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
 

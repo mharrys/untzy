@@ -29,6 +29,8 @@ public:
         GstElement* pipeline;
         GstElement* source;
         GstElement* convert;
+        GstElement* volume;
+        GstElement* level;
         GstElement* sink;
         GstBus* bus;
         GstState state;
@@ -50,6 +52,8 @@ public:
     void set_uri(const std::string& uri);
     // Set pipeline state.
     void set_state(State state);
+    // Set volume level. Expected values between 0.0 and 1.0.
+    void set_volume(double level);
 private:
     GStreamer_pipeline(const Gst_data& data);
 

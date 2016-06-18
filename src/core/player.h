@@ -31,6 +31,7 @@ public slots:
     virtual void load(const QUrl& url) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
+    virtual void set_volume(double level) = 0;
 signals:
     void playing();
     void paused();
@@ -42,6 +43,7 @@ public:
     void load(const QUrl& url);
     void play() final;
     void pause() final;
+    void set_volume(double level) final;
 private:
     std::unique_ptr<Engine> engine;
 };

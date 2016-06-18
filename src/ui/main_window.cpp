@@ -23,7 +23,8 @@
 Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
     : player(std::move(player)),
       QMainWindow(parent),
-      ui(new Ui::MainWindow)
+      ui(new Ui::MainWindow),
+      volume_level(1.0)
 {
     ui->setupUi(this);
 
@@ -38,6 +39,9 @@ Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
     connect(this->player.get(), &Player::paused, [=]() {
         ui->songLabel->setText("(Paused) " + current_song.baseName());
     });
+
+    connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
+    connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
 }
 
 Main_window::~Main_window()
@@ -64,4 +68,16 @@ void Main_window::play()
 void Main_window::pause()
 {
     player->pause();
+}
+
+void Main_window::increase_volume()
+{
+    volume_level = std::min(1.0, volume_level + 0.1);
+    player->set_volume(volume_level);
+}
+
+void Main_window::decrease_volume()
+{
+    volume_level = std::max(0.0, volume_level - 0.1);
+    player->set_volume(volume_level);
 }
