@@ -19,6 +19,8 @@
 #include "gstreamer_pipeline.h"
 #include "engine.h"
 
+class Volume;
+
 // The responsibility of this class is to provide an interface to the
 // GStreamer multimedia framework.
 class GStreamer_engine : public Engine {
@@ -32,8 +34,8 @@ public:
     void play() final;
     // Pause playback.
     void pause() final;
-    // Set volume level. Expected values between 0.0 and 1.0.
-    void set_volume(double level);
+    // Set volume level.
+    void set_volume(const Volume& volume);
 private:
     GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
 

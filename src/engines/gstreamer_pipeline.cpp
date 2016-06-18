@@ -15,6 +15,8 @@
 
 #include "gstreamer_pipeline.h"
 
+#include "core/volume.h"
+
 namespace {
 
     GstBusSyncReply bus_sync_handler(GstBus* bus, GstMessage* message, gpointer user_data)
@@ -191,9 +193,9 @@ void GStreamer_pipeline::set_state(State state)
         data.state = new_state;
 }
 
-void GStreamer_pipeline::set_volume(double level)
+void GStreamer_pipeline::set_volume(const Volume& volume)
 {
-    g_object_set(data.volume, "volume", level, NULL);
+    g_object_set(data.volume, "volume", volume.get_level(), NULL);
 }
 
 GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data)

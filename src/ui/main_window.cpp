@@ -23,8 +23,7 @@
 Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
     : player(std::move(player)),
       QMainWindow(parent),
-      ui(new Ui::MainWindow),
-      volume_level(1.0)
+      ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
@@ -72,12 +71,12 @@ void Main_window::pause()
 
 void Main_window::increase_volume()
 {
-    volume_level = std::min(1.0, volume_level + 0.1);
-    player->set_volume(volume_level);
+    volume.increase();
+    player->set_volume(volume);
 }
 
 void Main_window::decrease_volume()
 {
-    volume_level = std::max(0.0, volume_level - 0.1);
-    player->set_volume(volume_level);
+    volume.decrease();
+    player->set_volume(volume);
 }

@@ -8,6 +8,7 @@ qt5_wrap_ui(UI
 
 set(SOURCES
     core/player.cpp
+    core/volume.cpp
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
     ui/main_window.cpp
@@ -15,6 +16,7 @@ set(SOURCES
 
 set(HEADERS
     core/player.h
+    core/volume.h
     engines/engine.h
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h

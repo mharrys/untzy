@@ -13,41 +13,47 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "player.h"
+#include "volume.h"
 
-#include "core/volume.h"
-#include "engines/engine.h"
+#include <algorithm>
+#include <stdexcept>
 
-Player::Player(QObject* parent)
-    : QObject(parent)
+Volume::Volume(double minimum, double maximum, double step)
+    : minimum(minimum),
+      maximum(maximum),
+      step(step),
+      level(maximum)
 {
+    if (minimum > maximum)
+        throw std::invalid_argument("minimum > maximum");
 }
 
-Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
-    : engine(std::move(engine)),
-      Player(parent)
+void Volume::increase()
 {
+    set_level(level + step);
 }
 
-void Player_impl::load(QUrl const & url)
+void Volume::decrease()
 {
-    engine->load(url.toString().toStdString());
+    set_level(level - step);
 }
 
-void Player_impl::play()
+void Volume::set_level(double level)
 {
-    engine->play();
-    emit playing();
+    this->level = std::min(maximum, std::max(minimum, level));
 }
 
-void Player_impl::pause()
+double Volume::get_level() const
 {
-    engine->pause();
-    emit paused();
+    return level;
 }
 
-void Player_impl::set_volume(const Volume& volume)
+double Volume::get_minimum() const
 {
-    engine->set_volume(volume);
-    emit volume_changed(volume);
+    return minimum;
+}
+
+double Volume::get_maximum() const
+{
+    return maximum;
 }

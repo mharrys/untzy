@@ -22,6 +22,7 @@
 #include <memory>
 
 class Engine;
+class Volume;
 
 class Player : public QObject {
   Q_OBJECT
@@ -31,10 +32,11 @@ public slots:
     virtual void load(const QUrl& url) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
-    virtual void set_volume(double level) = 0;
+    virtual void set_volume(const Volume& volume) = 0;
 signals:
     void playing();
     void paused();
+    void volume_changed(const Volume& volume);
 };
 
 class Player_impl : public Player {
@@ -43,7 +45,7 @@ public:
     void load(const QUrl& url);
     void play() final;
     void pause() final;
-    void set_volume(double level) final;
+    void set_volume(const Volume& volume) final;
 private:
     std::unique_ptr<Engine> engine;
 };

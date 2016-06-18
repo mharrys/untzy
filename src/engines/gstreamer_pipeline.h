@@ -21,6 +21,8 @@
 #include <memory>
 #include <string>
 
+class Volume;
+
 // The responsibility of this class is to provide an interface to a GStreamer
 // pipeline.
 class GStreamer_pipeline {
@@ -52,8 +54,8 @@ public:
     void set_uri(const std::string& uri);
     // Set pipeline state.
     void set_state(State state);
-    // Set volume level. Expected values between 0.0 and 1.0.
-    void set_volume(double level);
+    // Set volume level.
+    void set_volume(const Volume& volume);
 private:
     GStreamer_pipeline(const Gst_data& data);
 

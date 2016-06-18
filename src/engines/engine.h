@@ -16,13 +16,15 @@
 #ifndef ENGINE_H_INCLUDED
 #define ENGINE_H_INCLUDED
 
+class Volume;
+
 class Engine {
 public:
     virtual ~Engine() = default;
     virtual void load(const std::string& uri) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
-    virtual void set_volume(double level) = 0;
+    virtual void set_volume(const Volume& volume) = 0;
 };
 
 #endif

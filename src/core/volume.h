@@ -13,39 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef MAIN_WINDOW_H_INCLUDED
-#define MAIN_WINDOW_H_INCLUDED
+#ifndef VOLUME_H_INCLUDED
+#define VOLUME_H_INCLUDED
 
-#include "core/volume.h"
-
-#include <QFileDialog>
-#include <QMainWindow>
-
-#include <memory>
-
-class Player;
-
-namespace Ui {
-class MainWindow;
-}
-
-class Main_window : public QMainWindow
-{
-    Q_OBJECT
+// Describes a volume level.
+class Volume {
 public:
-    explicit Main_window(std::unique_ptr<Player> player, QWidget* parent = nullptr);
-    ~Main_window();
-private slots:
-    void open_file();
-    void play();
-    void pause();
-    void increase_volume();
-    void decrease_volume();
+    // Create a new volume with current level set to max.
+    Volume(double minimum = 0.0, double maximum = 1.0, double step = 0.1);
+
+    // Increase volume level with one step.
+    void increase();
+    // Decrease volume level with one step.
+    void decrease();
+    // Set volume level to specified value. The level value is clamped within
+    // minimum and maximum allowed value.
+    void set_level(double level);
+
+    double get_level() const;
+    double get_minimum() const;
+    double get_maximum() const;
 private:
-    Ui::MainWindow* ui;
-    std::unique_ptr<Player> player;
-    QFileInfo current_song;
-    Volume volume;
+    double minimum, maximum, step, level;
 };
 
 #endif
