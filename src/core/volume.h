@@ -20,7 +20,7 @@
 class Volume {
 public:
     // Create a new volume with current level set to max.
-    Volume(double minimum = 0.0, double maximum = 1.0, double step = 0.1);
+    Volume(double minimum = 0.0, double maximum = 1.0, double step = 0.2);
 
     // Increase volume level with one step.
     void increase();
