@@ -28,7 +28,7 @@ class Volume;
 
 // The responsibility of this class is to provide an interface to a GStreamer
 // pipeline.
-class GStreamer_pipeline : QObject {
+class GStreamer_pipeline : public QObject {
     Q_OBJECT
 public:
     struct Gst_data {
