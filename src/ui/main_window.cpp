@@ -18,9 +18,13 @@
 
 #include "core/player.h"
 
+#include <QMessageBox>
 #include <QStandardPaths>
 
-Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
+Main_window::Main_window(
+    std::unique_ptr<Player>
+    player, std::shared_ptr<Logger> logger,
+    QWidget* parent)
     : player(std::move(player)),
       QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -35,6 +39,13 @@ Main_window::Main_window(std::unique_ptr<Player> player, QWidget* parent)
     });
     connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
     connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
+    connect(logger.get(), &Logger::new_message, [=](Logger::Tag tag, Logger::Level level, const QString& msg) {
+        auto title = "Untzy";
+        if (level == Logger::Level::warning)
+            QMessageBox::warning(NULL, title, msg);
+        else if (level == Logger::Level::critical)
+            QMessageBox::critical(NULL, title, msg);
+    });
 }
 
 Main_window::~Main_window()

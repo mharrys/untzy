@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
     auto player = std::make_unique<Player_impl>(std::move(engine));
     QObject::disconnect(conn);
 
-    Main_window main_window(std::move(player));
+    Main_window main_window(std::move(player), logger);
     main_window.show();
 
     return app.exec();

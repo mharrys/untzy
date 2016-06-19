@@ -16,6 +16,7 @@
 #ifndef MAIN_WINDOW_H_INCLUDED
 #define MAIN_WINDOW_H_INCLUDED
 
+#include "core/logger.h"
 #include "core/volume.h"
 
 #include <QFileDialog>
@@ -33,7 +34,10 @@ class Main_window : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit Main_window(std::unique_ptr<Player> player, QWidget* parent = nullptr);
+    explicit Main_window(
+        std::unique_ptr<Player> player,
+        std::shared_ptr<Logger> logger,
+        QWidget* parent = nullptr);
     ~Main_window();
 private slots:
     void open_file();
