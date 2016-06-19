@@ -20,12 +20,18 @@
 
 class Volume;
 
+// The responsibility of this class is to provide an interface for a
+// multimedia framework.
 class Engine : public QObject {
 public:
     virtual ~Engine() = default;
+    // Prepare the pipeline with a local or remote url.
     virtual void load(const QUrl& url) = 0;
+    // Start or continue playback.
     virtual void play() = 0;
+    // Pause playback.
     virtual void pause() = 0;
+    // Set volume level.
     virtual void set_volume(const Volume& volume) = 0;
 };
 

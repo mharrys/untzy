@@ -16,8 +16,8 @@
 #ifndef GSTREAMER_ENGINE_H_INCLUDED
 #define GSTREAMER_ENGINE_H_INCLUDED
 
-#include "gstreamer_pipeline.h"
 #include "engine.h"
+#include "engines/gstreamer_pipeline.h"
 
 #include <memory>
 
@@ -33,13 +33,9 @@ public:
 
     GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
 
-    // Prepare the pipeline with a local or remote url.
     void load(const QUrl& url) final;
-    // Start or continue playback.
     void play() final;
-    // Pause playback.
     void pause() final;
-    // Set volume level.
     void set_volume(const Volume& volume);
 private:
     std::unique_ptr<GStreamer_pipeline> pipeline;
