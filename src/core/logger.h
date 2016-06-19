@@ -13,20 +13,33 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ENGINE_H_INCLUDED
-#define ENGINE_H_INCLUDED
+#ifndef LOGGER_H_INCLUDED
+#define LOGGER_H_INCLUDED
 
 #include <QObject>
+#include <QString>
 
-class Volume;
-
-class Engine : public QObject {
+// The responsibility of this class is unify the interface and control to log
+// messages from different systems.
+class Logger : public QObject {
+    Q_OBJECT
 public:
-    virtual ~Engine() = default;
-    virtual void load(const std::string& uri) = 0;
-    virtual void play() = 0;
-    virtual void pause() = 0;
-    virtual void set_volume(const Volume& volume) = 0;
+    enum class Tag {
+        core,
+        engine
+    };
+
+    enum class Level {
+        information,
+        warning,
+        critical
+    };
+
+    void info(Tag tag, const QString& message);
+    void warn(Tag tag, const QString& message);
+    void crit(Tag tag, const QString& message);
+signals:
+    void new_message(Tag tag, Level level, const QString& message);
 };
 
 #endif

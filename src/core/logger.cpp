@@ -13,20 +13,19 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef ENGINE_H_INCLUDED
-#define ENGINE_H_INCLUDED
+#include "logger.h"
 
-#include <QObject>
+void Logger::info(Tag tag, const QString& message)
+{
+    emit new_message(tag, Level::information, message);
+}
 
-class Volume;
+void Logger::warn(Tag tag, const QString& message)
+{
+    emit new_message(tag, Level::warning, message);
+}
 
-class Engine : public QObject {
-public:
-    virtual ~Engine() = default;
-    virtual void load(const std::string& uri) = 0;
-    virtual void play() = 0;
-    virtual void pause() = 0;
-    virtual void set_volume(const Volume& volume) = 0;
-};
-
-#endif
+void Logger::crit(Tag tag, const QString& message)
+{
+    emit new_message(tag, Level::critical, message);
+}

@@ -13,6 +13,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
+#include "core/logger.h"
 #include "core/player.h"
 #include "engines/gstreamer_engine.h"
 #include "ui/main_window.h"
@@ -20,18 +21,24 @@
 #include <QApplication>
 #include <QMessageBox>
 
-#include <iostream>
+void init_msg_box(Logger::Tag tag, Logger::Level level, const QString& msg)
+{
+    if (level > Logger::Level::warning)
+        QMessageBox::critical(NULL, "Untzy", msg);
+}
 
 int main(int argc, char* argv[])
 {
-    auto engine = GStreamer_engine::make();
-    if (!engine) {
-        std::cerr << "untzy: Unable to create GStreamer engine.\n";
-        return 1;
-    }
-    auto player = std::make_unique<Player_impl>(std::move(engine));
-
     QApplication app(argc, argv);
+
+    auto logger = std::make_shared<Logger>();
+    // Displays message box during the initialization phase.
+    auto conn = QObject::connect(logger.get(), &Logger::new_message, &init_msg_box);
+    auto engine = GStreamer_engine::make(logger);
+    if (!engine)
+        return 1;
+    auto player = std::make_unique<Player_impl>(std::move(engine));
+    QObject::disconnect(conn);
 
     Main_window main_window(std::move(player));
     main_window.show();

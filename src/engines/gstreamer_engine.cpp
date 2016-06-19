@@ -15,19 +15,22 @@
 
 #include "gstreamer_engine.h"
 
-std::unique_ptr<GStreamer_engine> GStreamer_engine::make()
+#include "core/logger.h"
+
+std::unique_ptr<GStreamer_engine> GStreamer_engine::make(std::shared_ptr<Logger> logger)
 {
     if (!gst_is_initialized()) {
         GError *err = NULL;
         if (!gst_init_check(NULL, NULL, &err)) {
-            g_printerr(
-                "gstreamer: Unable to initialize library: %s\n",
-                err ? err->message : "Unknown reason");
+            auto reason = err ? err->message : tr("Unknown reason");
+            logger->crit(
+                Logger::Tag::engine,
+                tr("Unable to initialize GStreamer library: %1").arg(reason));
             return nullptr;
         }
     }
 
-    auto pipeline = GStreamer_pipeline::make();
+    auto pipeline = GStreamer_pipeline::make(logger);
     if (!pipeline)
         return nullptr;
 

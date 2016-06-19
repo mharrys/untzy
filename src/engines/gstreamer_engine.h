@@ -19,6 +19,9 @@
 #include "gstreamer_pipeline.h"
 #include "engine.h"
 
+#include <memory>
+
+class Logger;
 class Volume;
 
 // The responsibility of this class is to provide an interface to the
@@ -26,7 +29,7 @@ class Volume;
 class GStreamer_engine : public Engine {
 public:
     // Create a simple audio engine.
-    static std::unique_ptr<GStreamer_engine> make();
+    static std::unique_ptr<GStreamer_engine> make(std::shared_ptr<Logger> logger);
 
     // Prepare the pipeline with a local or remote URI.
     void load(const std::string& uri) final;
