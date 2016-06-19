@@ -34,8 +34,12 @@ std::unique_ptr<GStreamer_engine> GStreamer_engine::make(std::shared_ptr<Logger>
     if (!pipeline)
         return nullptr;
 
-    return std::unique_ptr<GStreamer_engine>(
-        new GStreamer_engine(std::move(pipeline)));
+    return std::make_unique<GStreamer_engine>(std::move(pipeline));
+}
+
+GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
+    : pipeline(std::move(pipeline))
+{
 }
 
 void GStreamer_engine::load(const std::string& uri)
@@ -56,9 +60,4 @@ void GStreamer_engine::pause()
 void GStreamer_engine::set_volume(const Volume& volume)
 {
     pipeline->set_volume(volume);
-}
-
-GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
-    : pipeline(std::move(pipeline))
-{
 }

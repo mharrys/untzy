@@ -31,6 +31,8 @@ public:
     // Create a simple audio engine.
     static std::unique_ptr<GStreamer_engine> make(std::shared_ptr<Logger> logger);
 
+    GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
+
     // Prepare the pipeline with a local or remote URI.
     void load(const std::string& uri) final;
     // Start or continue playback.
@@ -40,8 +42,6 @@ public:
     // Set volume level.
     void set_volume(const Volume& volume);
 private:
-    GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
-
     std::unique_ptr<GStreamer_pipeline> pipeline;
 };
 

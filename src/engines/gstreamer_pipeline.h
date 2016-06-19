@@ -59,6 +59,7 @@ public:
     // Create a simple audio pipeline.
     static std::unique_ptr<GStreamer_pipeline> make(std::shared_ptr<Logger> logger);
 
+    GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger);
     ~GStreamer_pipeline();
 
     // Set source URI. Must include protocol i.e. file://, http:// etc.
@@ -71,8 +72,6 @@ signals:
     void end_of_stream();
     void state_changed(State old_state, State new_state);
 private:
-    GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger);
-
     Gst_data data;
     std::shared_ptr<Logger> logger;
     User_data user_data;

@@ -195,8 +195,17 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Log
 
     data.bus = gst_element_get_bus(data.pipeline);
     data.state = GST_STATE_NULL;
-    return std::unique_ptr<GStreamer_pipeline>(
-        new GStreamer_pipeline(data, logger));
+    return std::make_unique<GStreamer_pipeline>(data, logger);
+}
+
+GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger)
+    : data(data),
+      logger(logger)
+
+{
+    user_data = {this, logger, data.convert};
+    g_signal_connect(this->data.source, "pad-added", G_CALLBACK(pad_added_handler), &user_data);
+    gst_bus_set_sync_handler(this->data.bus, bus_sync_handler, &user_data, NULL);
 }
 
 GStreamer_pipeline::~GStreamer_pipeline()
@@ -240,14 +249,4 @@ void GStreamer_pipeline::set_state(State state)
 void GStreamer_pipeline::set_volume(const Volume& volume)
 {
     g_object_set(data.volume, "volume", volume.get_level(), NULL);
-}
-
-GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger)
-    : data(data),
-      logger(logger)
-
-{
-    user_data = {this, logger, data.convert};
-    g_signal_connect(this->data.source, "pad-added", G_CALLBACK(pad_added_handler), &user_data);
-    gst_bus_set_sync_handler(this->data.bus, bus_sync_handler, &user_data, NULL);
 }
