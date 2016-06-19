@@ -21,7 +21,6 @@
 #include <QObject>
 
 #include <memory>
-#include <string>
 
 class Logger;
 class Volume;
