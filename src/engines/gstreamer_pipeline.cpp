@@ -46,10 +46,10 @@ namespace {
             gst_message_parse_info(message, &error, &dbg_info);
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Info from element %1: %2.").arg(GST_OBJECT_NAME(message->src), error->message));
+                QObject::tr("Info from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Debugging info: %1.").arg(dbg_info ? dbg_info : QObject::tr("None")));
+                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
             g_error_free(error);
             g_free(dbg_info);
             break;
@@ -57,10 +57,10 @@ namespace {
             gst_message_parse_warning(message, &error, &dbg_info);
             user_data->logger->warn(
                 Logger::Tag::engine,
-                QObject::tr("Warning from element %1: %2.").arg(GST_OBJECT_NAME(message->src), error->message));
+                QObject::tr("Warning from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Debugging info: %1.").arg(dbg_info ? dbg_info : QObject::tr("None")));
+                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
             g_error_free(error);
             g_free(dbg_info);
             break;
@@ -68,22 +68,22 @@ namespace {
             gst_message_parse_error(message, &error, &dbg_info);
             user_data->logger->crit(
                 Logger::Tag::engine,
-                QObject::tr("Error from element %1: %2.").arg(GST_OBJECT_NAME(message->src), error->message));
+                QObject::tr("Error from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Debugging info: %1.").arg(dbg_info ? dbg_info : QObject::tr("None")));
+                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
             g_error_free(error);
             g_free(dbg_info);
             break;
         case GST_MESSAGE_EOS:
-            user_data->logger->info(Logger::Tag::engine, QObject::tr("End of stream."));
+            user_data->logger->info(Logger::Tag::engine, QObject::tr("End of stream"));
             emit user_data->pipeline->end_of_stream();
             break;
         case GST_MESSAGE_STATE_CHANGED:
             gst_message_parse_state_changed(message, &old_state, &new_state, NULL);
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Element %1 changed state from %2 to %3.").arg(
+                QObject::tr("Element %1 changed state from %2 to %3").arg(
                     GST_OBJECT_NAME(message->src),
                     gst_element_state_get_name(old_state),
                     gst_element_state_get_name(new_state)));
@@ -103,7 +103,7 @@ namespace {
             gst_object_unref(sink_pad);
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Attempted to link new pad \"%1\" from \"%2\", but already linked.").arg(
+                QObject::tr("Attempted to link new pad \"%1\" from \"%2\", but already linked").arg(
                     GST_PAD_NAME(new_pad),
                     GST_ELEMENT_NAME(src)));
             return;
@@ -115,7 +115,7 @@ namespace {
         if (!g_str_has_prefix(new_pad_type, "audio/x-raw")) {
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("New pad \"%1\" from \"%2\" is not raw audio.").arg(
+                QObject::tr("New pad \"%1\" from \"%2\" is not raw audio").arg(
                     GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src)));
             gst_caps_unref(new_pad_caps);
             gst_object_unref(sink_pad);
@@ -126,12 +126,12 @@ namespace {
         if (GST_PAD_LINK_FAILED(ret)) {
             user_data->logger->crit(
                 Logger::Tag::engine,
-                QObject::tr("Failed to link new pad \"%1\" from \"%2\" with type \"%3\".").arg(
+                QObject::tr("Failed to link new pad \"%1\" from \"%2\" with type \"%3\"").arg(
                     GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src), new_pad_type));
         } else {
             user_data->logger->info(
                 Logger::Tag::engine,
-                QObject::tr("Successfully linked new pad \"%1\" from \"%2\" with type \"%3\".").arg(
+                QObject::tr("Successfully linked new pad \"%1\" from \"%2\" with type \"%3\"").arg(
                     GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src), new_pad_type));
         }
     }
@@ -141,11 +141,11 @@ namespace {
 std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Logger> logger)
 {
     if (!gst_is_initialized()) {
-        logger->crit(Logger::Tag::engine, tr("Unable to create pipeline, GStreamer is not initialized."));
+        logger->crit(Logger::Tag::engine, tr("Unable to create pipeline, GStreamer is not initialized"));
         return nullptr;
     }
 
-    const auto elem_crit = tr("Unable to create GStreamer element \"%1\".");
+    const auto elem_crit = tr("Unable to create GStreamer element \"%1\"");
 
     Gst_data data;
     data.source = gst_element_factory_make("uridecodebin", "source");
@@ -175,7 +175,7 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Log
     }
     data.pipeline = gst_pipeline_new("pipeline");
     if (!data.pipeline) {
-        logger->crit(Logger::Tag::engine, tr("Unable to create new GStreamer pipeline."));
+        logger->crit(Logger::Tag::engine, tr("Unable to create new GStreamer pipeline"));
         return nullptr;
     }
     gst_bin_add_many(
@@ -188,7 +188,7 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Log
         NULL);
 
     if (!gst_element_link_many(data.convert, data.volume, data.level, data.sink, NULL)) {
-        logger->crit(Logger::Tag::engine, tr("Unable to link elements in GStreamer pipeline."));
+        logger->crit(Logger::Tag::engine, tr("Unable to link elements in GStreamer pipeline"));
         gst_object_unref(data.pipeline);
         return nullptr;
     }
@@ -241,7 +241,7 @@ void GStreamer_pipeline::set_state(State state)
     auto new_state = translate_state();
     GstStateChangeReturn ret = gst_element_set_state(data.pipeline, new_state);
     if (ret == GST_STATE_CHANGE_FAILURE)
-        logger->crit(Logger::Tag::engine, tr("Unable to set GStreamer pipeline state."));
+        logger->crit(Logger::Tag::engine, tr("Unable to set GStreamer pipeline state"));
     else
         data.state = new_state;
 }
