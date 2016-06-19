@@ -33,8 +33,8 @@ public:
 
     GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
 
-    // Prepare the pipeline with a local or remote URI.
-    void load(const std::string& uri) final;
+    // Prepare the pipeline with a local or remote url.
+    void load(const QUrl& url) final;
     // Start or continue playback.
     void play() final;
     // Pause playback.

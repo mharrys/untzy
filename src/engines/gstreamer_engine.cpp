@@ -17,6 +17,8 @@
 
 #include "core/logger.h"
 
+#include <QUrl>
+
 std::unique_ptr<GStreamer_engine> GStreamer_engine::make(std::shared_ptr<Logger> logger)
 {
     if (!gst_is_initialized()) {
@@ -42,9 +44,9 @@ GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
 {
 }
 
-void GStreamer_engine::load(const std::string& uri)
+void GStreamer_engine::load(const QUrl& url)
 {
-    pipeline->set_uri(uri);
+    pipeline->set_uri(url.toString());
 }
 
 void GStreamer_engine::play()

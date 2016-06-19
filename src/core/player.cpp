@@ -29,9 +29,9 @@ Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
 {
 }
 
-void Player_impl::load(QUrl const & url)
+void Player_impl::load(const QUrl& url)
 {
-    engine->load(url.toString().toStdString());
+    engine->load(url);
 }
 
 void Player_impl::play()

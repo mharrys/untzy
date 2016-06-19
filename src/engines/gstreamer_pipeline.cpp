@@ -216,11 +216,11 @@ GStreamer_pipeline::~GStreamer_pipeline()
     gst_object_unref(data.pipeline);
 }
 
-void GStreamer_pipeline::set_uri(const std::string& uri)
+void GStreamer_pipeline::set_uri(const QString& uri)
 {
     if (data.state >= GST_STATE_READY)
         set_state(State::ready);
-    g_object_set(data.source, "uri", uri.c_str(), NULL);
+    g_object_set(data.source, "uri", uri.toUtf8().constData(), NULL);
 }
 
 void GStreamer_pipeline::set_state(State state)

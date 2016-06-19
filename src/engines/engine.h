@@ -23,7 +23,7 @@ class Volume;
 class Engine : public QObject {
 public:
     virtual ~Engine() = default;
-    virtual void load(const std::string& uri) = 0;
+    virtual void load(const QUrl& url) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void set_volume(const Volume& volume) = 0;

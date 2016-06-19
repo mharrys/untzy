@@ -62,8 +62,8 @@ public:
     GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger);
     ~GStreamer_pipeline();
 
-    // Set source URI. Must include protocol i.e. file://, http:// etc.
-    void set_uri(const std::string& uri);
+    // Set source URL. Must include protocol i.e. file://, http://.
+    void set_uri(const QString& uri);
     // Set pipeline state.
     void set_state(State state);
     // Set volume level.
