@@ -1,3 +1,8 @@
 # Untzy
+A music player.
 
-A music player. For Mp3 support, install gst-plugins-ugly.
+## Packages
+Install development packages for Qt5 (>= 5.6.0) and GStreamer 1.0.
+
+## Support
+Install gst-plugins-ugly for Mp3 support.
