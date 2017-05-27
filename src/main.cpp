@@ -32,13 +32,17 @@ int main(int argc, char* argv[])
     QApplication app(argc, argv);
 
     auto logger = std::make_shared<Logger>();
-    // Displays message box during the initialization phase.
-    auto conn = QObject::connect(logger.get(), &Logger::new_message, &init_msg_box);
-    auto engine = GStreamer_engine::make(logger);
-    if (!engine)
+
+    std::unique_ptr<Engine> engine;
+    try {
+        engine = GStreamer_engine::make(logger);
+    } catch (std::runtime_error& e) {
+        auto msg = QObject::tr("Unable to initialize GStreamer. Reason: %1").arg(e.what());
+        QMessageBox::critical(NULL, "Untzy", msg);
         return 1;
+    }
+
     auto player = std::make_unique<Player_impl>(std::move(engine));
-    QObject::disconnect(conn);
 
     Main_window main_window(std::move(player), logger);
     main_window.show();

@@ -16,27 +16,18 @@
 #include "gstreamer_engine.h"
 
 #include "core/logger.h"
+#include "core/volume.h"
 
 #include <QUrl>
 
 std::unique_ptr<GStreamer_engine> GStreamer_engine::make(std::shared_ptr<Logger> logger)
 {
-    if (!gst_is_initialized()) {
-        GError *err = NULL;
-        if (!gst_init_check(NULL, NULL, &err)) {
-            auto reason = err ? err->message : tr("Unknown reason");
-            logger->crit(
-                Logger::Tag::engine,
-                tr("Unable to initialize GStreamer library: %1").arg(reason));
-            return nullptr;
-        }
+    try {
+        auto pipeline = GStreamer_pipeline::make();
+        return std::make_unique<GStreamer_engine>(std::move(pipeline));
+    } catch (std::runtime_error& e) {
+        throw e;
     }
-
-    auto pipeline = GStreamer_pipeline::make(logger);
-    if (!pipeline)
-        return nullptr;
-
-    return std::make_unique<GStreamer_engine>(std::move(pipeline));
 }
 
 GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
@@ -46,7 +37,7 @@ GStreamer_engine::GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline)
 
 void GStreamer_engine::load(const QUrl& url)
 {
-    pipeline->set_uri(url.toString());
+    pipeline->set_uri(url.toString().toStdString());
 }
 
 void GStreamer_engine::play()
@@ -61,5 +52,5 @@ void GStreamer_engine::pause()
 
 void GStreamer_engine::set_volume(const Volume& volume)
 {
-    pipeline->set_volume(volume);
+    pipeline->set_volume(volume.get_level());
 }

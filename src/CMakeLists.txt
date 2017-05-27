@@ -12,6 +12,7 @@ set(SOURCES
     core/volume.cpp
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
+    engines/gstreamer_thread.cpp
     ui/main_window.cpp
 )
 
@@ -22,6 +23,7 @@ set(HEADERS
     engines/engine.h
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h
+    engines/gstreamer_thread.h
     ui/main_window.h
 )
 

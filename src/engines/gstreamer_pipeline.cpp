@@ -15,169 +15,50 @@
 
 #include "gstreamer_pipeline.h"
 
-#include "core/logger.h"
-#include "core/volume.h"
+#include <sstream>
 
-namespace {
-
-    GStreamer_pipeline::State translate_state(GstState state)
-    {
-        switch (state) {
-        case GST_STATE_READY:
-            return GStreamer_pipeline::State::ready;
-        case GST_STATE_PAUSED:
-            return GStreamer_pipeline::State::paused;
-        case GST_STATE_PLAYING:
-            return GStreamer_pipeline::State::playing;
-        case GST_STATE_NULL:
-        default:
-            return GStreamer_pipeline::State::initial;
-        }
-    };
-
-    GstBusSyncReply bus_sync_handler(GstBus* bus, GstMessage* message, gpointer user_data_ptr)
-    {
-        auto user_data = reinterpret_cast<GStreamer_pipeline::User_data*>(user_data_ptr);
-        GError* error;
-        gchar* dbg_info;
-        GstState old_state, new_state;
-        switch (GST_MESSAGE_TYPE(message)) {
-        case GST_MESSAGE_INFO:
-            gst_message_parse_info(message, &error, &dbg_info);
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Info from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
-            g_error_free(error);
-            g_free(dbg_info);
-            break;
-        case GST_MESSAGE_WARNING:
-            gst_message_parse_warning(message, &error, &dbg_info);
-            user_data->logger->warn(
-                Logger::Tag::engine,
-                QObject::tr("Warning from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
-            g_error_free(error);
-            g_free(dbg_info);
-            break;
-        case GST_MESSAGE_ERROR:
-            gst_message_parse_error(message, &error, &dbg_info);
-            user_data->logger->crit(
-                Logger::Tag::engine,
-                QObject::tr("Error from element %1: %2").arg(GST_OBJECT_NAME(message->src), error->message));
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Debugging info: %1").arg(dbg_info ? dbg_info : QObject::tr("None")));
-            g_error_free(error);
-            g_free(dbg_info);
-            break;
-        case GST_MESSAGE_EOS:
-            user_data->logger->info(Logger::Tag::engine, QObject::tr("End of stream"));
-            emit user_data->pipeline->end_of_stream();
-            break;
-        case GST_MESSAGE_STATE_CHANGED:
-            gst_message_parse_state_changed(message, &old_state, &new_state, NULL);
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Element %1 changed state from %2 to %3").arg(
-                    GST_OBJECT_NAME(message->src),
-                    gst_element_state_get_name(old_state),
-                    gst_element_state_get_name(new_state)));
-            emit user_data->pipeline->state_changed(
-                    translate_state(old_state),
-                    translate_state(new_state));
-            break;
-        }
-        return GST_BUS_PASS;
-    }
-
-    void pad_added_handler(GstElement* src, GstPad* new_pad, GStreamer_pipeline::User_data* user_data)
-    {
-        GstPad* sink_pad = gst_element_get_static_pad(user_data->convert, "sink");
-
-        if (gst_pad_is_linked(sink_pad)) {
-            gst_object_unref(sink_pad);
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Attempted to link new pad \"%1\" from \"%2\", but already linked").arg(
-                    GST_PAD_NAME(new_pad),
-                    GST_ELEMENT_NAME(src)));
-            return;
-        }
-
-        GstCaps* new_pad_caps = gst_pad_get_current_caps(new_pad);
-        GstStructure* new_pad_struct = gst_caps_get_structure(new_pad_caps, 0);
-        const gchar* new_pad_type = gst_structure_get_name(new_pad_struct);
-        if (!g_str_has_prefix(new_pad_type, "audio/x-raw")) {
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("New pad \"%1\" from \"%2\" is not raw audio").arg(
-                    GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src)));
-            gst_caps_unref(new_pad_caps);
-            gst_object_unref(sink_pad);
-            return;
-        }
-
-        GstPadLinkReturn ret = gst_pad_link(new_pad, sink_pad);
-        if (GST_PAD_LINK_FAILED(ret)) {
-            user_data->logger->crit(
-                Logger::Tag::engine,
-                QObject::tr("Failed to link new pad \"%1\" from \"%2\" with type \"%3\"").arg(
-                    GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src), new_pad_type));
-        } else {
-            user_data->logger->info(
-                Logger::Tag::engine,
-                QObject::tr("Successfully linked new pad \"%1\" from \"%2\" with type \"%3\"").arg(
-                    GST_PAD_NAME(new_pad), GST_ELEMENT_NAME(src), new_pad_type));
-        }
-    }
-
-}
-
-std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Logger> logger)
+std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make()
 {
     if (!gst_is_initialized()) {
-        logger->crit(Logger::Tag::engine, tr("Unable to create pipeline, GStreamer is not initialized"));
-        return nullptr;
+        GError *err = NULL;
+        if (!gst_init_check(NULL, NULL, &err)) {
+            std::stringstream ss;
+            ss << "Unable to initialize GStreamer library: " << (err ? err->message : "Unknown reason");
+            throw std::runtime_error(ss.str());
+        }
     }
 
-    const auto elem_crit = tr("Unable to create GStreamer element \"%1\"");
+    auto elem_err = [](const std::string& elem)
+    {
+        const auto elem_crit = "Unable to create GStreamer element: ";
+        throw std::runtime_error(elem_crit + elem);
+    };
 
     Gst_data data;
     data.source = gst_element_factory_make("uridecodebin", "source");
-    if (!data.source) {
-        logger->crit(Logger::Tag::engine, elem_crit.arg("uridecodebin"));
-        return nullptr;
-    }
+    if (!data.source)
+        elem_err("uridecodebin");
+
     data.convert = gst_element_factory_make("audioconvert", "convert");
-    if (!data.convert) {
-        logger->crit(Logger::Tag::engine, elem_crit.arg("audioconvert"));
-        return nullptr;
-    }
+    if (!data.convert)
+        elem_err("audioconvert");
+
     data.volume = gst_element_factory_make("volume", "volume");
-    if (!data.volume) {
-        logger->crit(Logger::Tag::engine, elem_crit.arg("volume"));
-        return nullptr;
-    }
+    if (!data.volume)
+        elem_err("volume");
+
     data.level = gst_element_factory_make("level", "level");
-    if (!data.level) {
-        logger->crit(Logger::Tag::engine, elem_crit.arg("level"));
-        return nullptr;
-    }
+    if (!data.level)
+        elem_err("level");
+
     data.sink = gst_element_factory_make("autoaudiosink", "sink");
-    if (!data.sink) {
-        logger->crit(Logger::Tag::engine, elem_crit.arg("autoaudiosink"));
-        return nullptr;
-    }
+    if (!data.sink)
+        elem_err("autoaudiosink");
+
     data.pipeline = gst_pipeline_new("pipeline");
-    if (!data.pipeline) {
-        logger->crit(Logger::Tag::engine, tr("Unable to create new GStreamer pipeline"));
-        return nullptr;
-    }
+    if (!data.pipeline)
+        elem_err("pipeline");
+
     gst_bin_add_many(
         GST_BIN(data.pipeline),
         data.source,
@@ -188,24 +69,22 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make(std::shared_ptr<Log
         NULL);
 
     if (!gst_element_link_many(data.convert, data.volume, data.level, data.sink, NULL)) {
-        logger->crit(Logger::Tag::engine, tr("Unable to link elements in GStreamer pipeline"));
         gst_object_unref(data.pipeline);
-        return nullptr;
+        throw std::runtime_error("Unable to link elements in GStreamer pipeline");
     }
 
     data.bus = gst_element_get_bus(data.pipeline);
     data.state = GST_STATE_NULL;
-    return std::make_unique<GStreamer_pipeline>(data, logger);
+    return std::make_unique<GStreamer_pipeline>(data);
 }
 
-GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger)
-    : data(data),
-      logger(logger)
-
+GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data)
+    : data(data)
 {
-    user_data = {this, logger, data.convert};
-    g_signal_connect(this->data.source, "pad-added", G_CALLBACK(pad_added_handler), &user_data);
-    gst_bus_set_sync_handler(this->data.bus, bus_sync_handler, &user_data, NULL);
+    std::vector<Gst_observer*> observers = {this};
+    user_data = {data.convert, observers};
+    g_signal_connect(this->data.source, "pad-added", G_CALLBACK(gst_pad_added_handler), &user_data);
+    gst_bus_set_sync_handler(this->data.bus, gst_bus_sync_handler, &user_data, NULL);
 }
 
 GStreamer_pipeline::~GStreamer_pipeline()
@@ -216,11 +95,28 @@ GStreamer_pipeline::~GStreamer_pipeline()
     gst_object_unref(data.pipeline);
 }
 
-void GStreamer_pipeline::set_uri(const QString& uri)
+// Start listen to state changes.
+void GStreamer_pipeline::add_observer(Observer* observer)
+{
+    observers.push_back(observer);
+}
+
+// Stop listen to state changes.
+void GStreamer_pipeline::remove_observer(Observer* observer)
+{
+    for (auto it = observers.begin(); it != observers.end(); it++) {
+        if (*it == observer) {
+            observers.erase(it);
+            break;
+        }
+    }
+}
+
+void GStreamer_pipeline::set_uri(const std::string& uri)
 {
     if (data.state >= GST_STATE_READY)
         set_state(State::ready);
-    g_object_set(data.source, "uri", uri.toUtf8().constData(), NULL);
+    g_object_set(data.source, "uri", uri.c_str(), NULL);
 }
 
 void GStreamer_pipeline::set_state(State state)
@@ -240,13 +136,79 @@ void GStreamer_pipeline::set_state(State state)
     };
     auto new_state = translate_state();
     GstStateChangeReturn ret = gst_element_set_state(data.pipeline, new_state);
-    if (ret == GST_STATE_CHANGE_FAILURE)
-        logger->crit(Logger::Tag::engine, tr("Unable to set GStreamer pipeline state"));
-    else
+    if (ret != GST_STATE_CHANGE_FAILURE)
         data.state = new_state;
 }
 
-void GStreamer_pipeline::set_volume(const Volume& volume)
+void GStreamer_pipeline::set_volume(double level )
 {
-    g_object_set(data.volume, "volume", volume.get_level(), NULL);
+    g_object_set(data.volume, "volume", level, NULL);
+}
+
+void GStreamer_pipeline::end_of_stream()
+{
+    notify_state_changed(State::playing, State::ended);
+}
+
+static GStreamer_pipeline::State translate_state(GstState state)
+{
+    switch (state) {
+    case GST_STATE_READY:
+        return GStreamer_pipeline::State::ready;
+    case GST_STATE_PAUSED:
+        return GStreamer_pipeline::State::paused;
+    case GST_STATE_PLAYING:
+        return GStreamer_pipeline::State::playing;
+    case GST_STATE_NULL:
+    default:
+        return GStreamer_pipeline::State::initial;
+    }
+};
+
+void GStreamer_pipeline::state_changed(GstState old_state, GstState new_state)
+{
+    notify_state_changed(translate_state(old_state), translate_state(new_state));
+}
+
+void GStreamer_pipeline::notify_state_changed(State old_state, State new_state)
+{
+    notify([old_state, new_state](Observer* observer) {
+        observer->state_changed(old_state, new_state);
+    });
+}
+
+static GStreamer_pipeline::Level translate_level(Gst_level level)
+{
+    switch (level) {
+        case Gst_level::info:
+            return GStreamer_pipeline::Level::info;
+        case Gst_level::warning:
+            return GStreamer_pipeline::Level::warning;
+        case Gst_level::error:
+            return GStreamer_pipeline::Level::error;
+    }
+}
+
+void GStreamer_pipeline::message(Gst_level level, const std::string& msg)
+{
+    notify_message(translate_level(level), msg);
+}
+
+void GStreamer_pipeline::notify_message(Level level, const std::string& msg)
+{
+    notify([level, msg](Observer* observer) {
+        observer->message(level, msg);
+    });
+}
+
+void GStreamer_pipeline::notify(std::function<void(Observer*)> fn)
+{
+    for (auto it = observers.begin(); it != observers.end();) {
+        if (*it == nullptr)
+            it = observers.erase(it);
+        else {
+            fn(*it);
+            it++;
+        }
+    }
 }

@@ -16,64 +16,68 @@
 #ifndef GSTREAMER_PIPELINE_H_INCLUDED
 #define GSTREAMER_PIPELINE_H_INCLUDED
 
-#include <gst/gst.h>
-
-#include <QObject>
+#include "gstreamer_thread.h"
 
 #include <memory>
-
-class Logger;
-class Volume;
+#include <vector>
 
 // The responsibility of this class is to provide an interface to a GStreamer
 // pipeline.
-class GStreamer_pipeline : public QObject {
-    Q_OBJECT
+class GStreamer_pipeline : public Gst_observer {
 public:
-    struct Gst_data {
-        GstElement* pipeline;
-        GstElement* source;
-        GstElement* convert;
-        GstElement* volume;
-        GstElement* level;
-        GstElement* sink;
-        GstBus* bus;
-        GstState state;
-    };
-
+    // Describes current state.
     enum class State {
         initial,
         ready,
         paused,
-        playing
+        playing,
+        ended
     };
 
-    // GStreamer callback data.
-    struct User_data {
-        GStreamer_pipeline* pipeline;
-        std::shared_ptr<Logger> logger;
-        GstElement* convert;
+    // Describes message severity level.
+    enum class Level {
+        info,
+        warning,
+        error
+    };
+
+    class Observer {
+    public:
+        virtual void state_changed(State old_state, State new_state) = 0;
+        virtual void message(Level level, const std::string& msg) = 0;
     };
 
     // Create a simple audio pipeline.
-    static std::unique_ptr<GStreamer_pipeline> make(std::shared_ptr<Logger> logger);
+    static std::unique_ptr<GStreamer_pipeline> make();
 
-    GStreamer_pipeline(const Gst_data& data, std::shared_ptr<Logger> logger);
+    GStreamer_pipeline(const Gst_data& data);
     ~GStreamer_pipeline();
 
+    // Start listen to state changes.
+    void add_observer(Observer* observer);
+    // Stop listen to state changes.
+    void remove_observer(Observer* observer);
+
     // Set source URL. Must include protocol i.e. file://, http://.
-    void set_uri(const QString& uri);
+    void set_uri(const std::string& uri);
     // Set pipeline state.
     void set_state(State state);
     // Set volume level.
-    void set_volume(const Volume& volume);
-signals:
-    void end_of_stream();
-    void state_changed(State old_state, State new_state);
+    void set_volume(double level);
+protected:
+    // GStreamer thread callbacks
+    void end_of_stream() override;
+    void state_changed(GstState old_state, GstState new_state) override;
+    void message(Gst_level level, const std::string& msg) override;
 private:
+    void notify_state_changed(State old_state, State new_state);
+    void notify_message(Level level, const std::string& msg);
+    void notify(std::function<void(Observer*)> fn);
+
     Gst_data data;
-    std::shared_ptr<Logger> logger;
-    User_data user_data;
+    Gst_user_data user_data;
+
+    std::vector<Observer*> observers;
 };
 
 
