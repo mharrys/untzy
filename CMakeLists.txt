@@ -8,7 +8,7 @@ set(QT_MIN_VERSION 5.6.0)
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic -Wall -Wextra")
 set(CMAKE_CXX_STANDARD 14)
 
-find_package(Qt5Widgets REQUIRED)
+find_package(Qt5 COMPONENTS Widgets)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
