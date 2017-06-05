@@ -36,7 +36,7 @@ public:
     void load(const QUrl& url) final;
     void play() final;
     void pause() final;
-    void set_volume(const Volume& volume);
+    void set_volume(const Volume& volume) final;
 private:
     std::unique_ptr<GStreamer_pipeline> pipeline;
 };
