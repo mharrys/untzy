@@ -13,46 +13,26 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "player.h"
+#include "engine_output.h"
+#include "ui_engine_output.h"
 
-#include "core/volume.h"
-#include "engines/engine.h"
+#include <QScrollBar>
 
-Player::Player(QObject* parent)
-    : QObject(parent)
+Engine_output::Engine_output(QWidget *parent) :
+    QWidget(parent),
+    ui(new Ui::Engine_output)
 {
+    ui->setupUi(this);
 }
 
-Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
-    : engine(std::move(engine)),
-      Player(parent)
+Engine_output::~Engine_output()
 {
+    delete ui;
 }
 
-void Player_impl::load(const QUrl& url)
+void Engine_output::new_message(Engine::Level level, const QString& msg)
 {
-    engine->load(url);
-}
-
-void Player_impl::play()
-{
-    engine->play();
-    emit playing();
-}
-
-void Player_impl::pause()
-{
-    engine->pause();
-    emit paused();
-}
-
-void Player_impl::set_volume(const Volume& volume)
-{
-    engine->set_volume(volume);
-    emit volume_changed(volume);
-}
-
-Engine* Player_impl::get_engine()
-{
-    return engine.get();
+    ui->text_output->insertPlainText(msg + "\n");
+    auto sb = ui->text_output->verticalScrollBar();
+    sb->setValue(sb->maximum());
 }

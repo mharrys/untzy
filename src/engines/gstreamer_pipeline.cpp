@@ -81,8 +81,7 @@ std::unique_ptr<GStreamer_pipeline> GStreamer_pipeline::make()
 GStreamer_pipeline::GStreamer_pipeline(const Gst_data& data)
     : data(data)
 {
-    std::vector<Gst_observer*> observers = {this};
-    user_data = {data.convert, observers};
+    user_data = {data.convert, {this}};
     g_signal_connect(this->data.source, "pad-added", G_CALLBACK(gst_pad_added_handler), &user_data);
     gst_bus_set_sync_handler(this->data.bus, gst_bus_sync_handler, &user_data, NULL);
 }

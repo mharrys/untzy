@@ -16,6 +16,8 @@
 #ifndef MAIN_WINDOW_H_INCLUDED
 #define MAIN_WINDOW_H_INCLUDED
 
+#include "engine_output.h"
+
 #include "core/logger.h"
 #include "core/volume.h"
 
@@ -27,7 +29,7 @@
 class Player;
 
 namespace Ui {
-class MainWindow;
+class main_window;
 }
 
 class Main_window : public QMainWindow
@@ -45,11 +47,13 @@ private slots:
     void pause();
     void increase_volume();
     void decrease_volume();
+    void show_engine_output();
 private:
-    Ui::MainWindow* ui;
+    Ui::main_window* ui;
     std::unique_ptr<Player> player;
     QFileInfo current_song;
     Volume volume;
+    Engine_output engine_output;
 };
 
 #endif

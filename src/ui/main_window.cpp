@@ -21,13 +21,12 @@
 #include <QMessageBox>
 #include <QStandardPaths>
 
-Main_window::Main_window(
-    std::unique_ptr<Player>
-    player, std::shared_ptr<Logger> logger,
-    QWidget* parent)
-    : player(std::move(player)),
-      QMainWindow(parent),
-      ui(new Ui::MainWindow)
+Main_window::Main_window(std::unique_ptr<Player> player,
+                         std::shared_ptr<Logger> logger,
+                         QWidget* parent) :
+    player(std::move(player)),
+    QMainWindow(parent),
+    ui(new Ui::main_window)
 {
     ui->setupUi(this);
     connect(ui->action_open,  &QAction::triggered, this, &Main_window::open_file);
@@ -39,6 +38,7 @@ Main_window::Main_window(
     });
     connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
     connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
+    connect(ui->action_engine_output, &QAction::triggered, this, &Main_window::show_engine_output);
     connect(logger.get(), &Logger::new_message, [=](Logger::Tag tag, Logger::Level level, const QString& msg) {
         auto title = "Untzy";
         if (level == Logger::Level::warning)
@@ -46,6 +46,7 @@ Main_window::Main_window(
         else if (level == Logger::Level::critical)
             QMessageBox::critical(NULL, title, msg);
     });
+    connect(this->player->get_engine(), &Engine::new_message, &engine_output, &Engine_output::new_message);
 }
 
 Main_window::~Main_window()
@@ -84,4 +85,9 @@ void Main_window::decrease_volume()
 {
     volume.decrease();
     player->set_volume(volume);
+}
+
+void Main_window::show_engine_output()
+{
+    engine_output.show();
 }

@@ -33,6 +33,7 @@ public slots:
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void set_volume(const Volume& volume) = 0;
+    virtual Engine* get_engine() = 0;
 signals:
     void playing();
     void paused();
@@ -46,6 +47,7 @@ public:
     void play() final;
     void pause() final;
     void set_volume(const Volume& volume) final;
+    Engine* get_engine() final;
 private:
     std::unique_ptr<Engine> engine;
 };

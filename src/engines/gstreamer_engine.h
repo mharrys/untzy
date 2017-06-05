@@ -21,15 +21,14 @@
 
 #include <memory>
 
-class Logger;
 class Volume;
 
 // The responsibility of this class is to provide an interface to the
 // GStreamer multimedia framework.
-class GStreamer_engine : public Engine {
+class GStreamer_engine : public Engine, GStreamer_pipeline::Observer {
 public:
     // Create a simple audio engine.
-    static std::unique_ptr<GStreamer_engine> make(std::shared_ptr<Logger> logger);
+    static std::unique_ptr<GStreamer_engine> make();
 
     GStreamer_engine(std::unique_ptr<GStreamer_pipeline> pipeline);
 
@@ -38,6 +37,10 @@ public:
     void pause() final;
     void set_volume(const Volume& volume) final;
 private:
+    void state_changed(GStreamer_pipeline::State old_state,
+                       GStreamer_pipeline::State new_state);
+    void message(GStreamer_pipeline::Level level, const std::string& msg);
+
     std::unique_ptr<GStreamer_pipeline> pipeline;
 };
 

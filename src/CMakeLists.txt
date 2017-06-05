@@ -4,6 +4,7 @@ qt5_add_resources(RESOURCES
 
 qt5_wrap_ui(UI
     ui/main_window.ui
+    ui/engine_output.ui
 )
 
 set(SOURCES
@@ -14,6 +15,7 @@ set(SOURCES
     engines/gstreamer_pipeline.cpp
     engines/gstreamer_thread.cpp
     ui/main_window.cpp
+    ui/engine_output.cpp
 )
 
 set(HEADERS
@@ -25,6 +27,7 @@ set(HEADERS
     engines/gstreamer_pipeline.h
     engines/gstreamer_thread.h
     ui/main_window.h
+    ui/engine_output.h
 )
 
 set(EXECUTABLE_OUTPUT_PATH ..)

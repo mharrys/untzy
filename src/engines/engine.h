@@ -23,7 +23,22 @@ class Volume;
 // The responsibility of this class is to provide an interface for a
 // multimedia framework.
 class Engine : public QObject {
+    Q_OBJECT
 public:
+    // Describes current state.
+    enum class State {
+        paused,
+        playing,
+        ended
+    };
+
+    // Describes message severity level.
+    enum class Level {
+        info,
+        warning,
+        error
+    };
+
     virtual ~Engine() = default;
     // Prepare the pipeline with a local or remote url.
     virtual void load(const QUrl& url) = 0;
@@ -33,6 +48,9 @@ public:
     virtual void pause() = 0;
     // Set volume level.
     virtual void set_volume(const Volume& volume) = 0;
+signals:
+    void new_state(State state);
+    void new_message(Level level, const QString& msg);
 };
 
 #endif

@@ -13,46 +13,28 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "player.h"
+#ifndef ENGINE_OUTPUT_H_INCLUDED
+#define ENGINE_OUTPUT_H_INCLUDED
 
-#include "core/volume.h"
 #include "engines/engine.h"
 
-Player::Player(QObject* parent)
-    : QObject(parent)
-{
+#include <QWidget>
+
+namespace Ui {
+class Engine_output;
 }
 
-Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
-    : engine(std::move(engine)),
-      Player(parent)
+// The responsibility of this class is to display engine messages.
+class Engine_output : public QWidget
 {
-}
+    Q_OBJECT
+public:
+    explicit Engine_output(QWidget *parent = 0);
+    ~Engine_output();
+public slots:
+    void new_message(Engine::Level level, const QString& msg);
+private:
+    Ui::Engine_output* ui;
+};
 
-void Player_impl::load(const QUrl& url)
-{
-    engine->load(url);
-}
-
-void Player_impl::play()
-{
-    engine->play();
-    emit playing();
-}
-
-void Player_impl::pause()
-{
-    engine->pause();
-    emit paused();
-}
-
-void Player_impl::set_volume(const Volume& volume)
-{
-    engine->set_volume(volume);
-    emit volume_changed(volume);
-}
-
-Engine* Player_impl::get_engine()
-{
-    return engine.get();
-}
+#endif

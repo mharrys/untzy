@@ -21,12 +21,6 @@
 #include <QApplication>
 #include <QMessageBox>
 
-void init_msg_box(Logger::Tag tag, Logger::Level level, const QString& msg)
-{
-    if (level > Logger::Level::warning)
-        QMessageBox::critical(NULL, "Untzy", msg);
-}
-
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
@@ -35,7 +29,7 @@ int main(int argc, char* argv[])
 
     std::unique_ptr<Engine> engine;
     try {
-        engine = GStreamer_engine::make(logger);
+        engine = GStreamer_engine::make();
     } catch (std::runtime_error& e) {
         auto msg = QObject::tr("Unable to initialize GStreamer. Reason: %1").arg(e.what());
         QMessageBox::critical(NULL, "Untzy", msg);
