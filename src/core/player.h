@@ -24,6 +24,8 @@
 class Engine;
 class Volume;
 
+// The responsibility of this class is provide an interface to interact with
+// the audio engine.
 class Player : public QObject {
     Q_OBJECT
 public:
