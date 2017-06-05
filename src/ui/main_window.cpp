@@ -30,12 +30,12 @@ Main_window::Main_window(std::unique_ptr<Player> player,
 {
     ui->setupUi(this);
     connect(ui->action_open,  &QAction::triggered, this, &Main_window::open_file);
-    connect(ui->action_play,  &QAction::triggered, this, &Main_window::play);
-    connect(ui->action_pause, &QAction::triggered, this, &Main_window::pause);
     connect(ui->action_exit,  &QAction::triggered, this, &Main_window::close);
     connect(this->player.get(), &Player::playing, [=]() {
         setWindowTitle(current_song.baseName());
     });
+    connect(ui->play_button,  &QPushButton::clicked, this, &Main_window::play);
+    connect(ui->pause_button, &QPushButton::clicked, this, &Main_window::pause);
     connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
     connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
     connect(ui->action_engine_output, &QAction::triggered, this, &Main_window::show_engine_output);

@@ -14,32 +14,40 @@
    <string>Untzy</string>
   </property>
   <widget class="QWidget" name="central_widget">
-   <widget class="QPushButton" name="dec_vol">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>110</y>
-      <width>131</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Decrease Volume</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="inc_vol">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>150</y>
-      <width>131</width>
-      <height>34</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Increase Volume</string>
-    </property>
-   </widget>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QPushButton" name="play_button">
+        <property name="text">
+         <string>Play</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pause_button">
+        <property name="text">
+         <string>Pause</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="dec_vol">
+        <property name="text">
+         <string>Decrease Volume</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="inc_vol">
+        <property name="text">
+         <string>Increase Volume</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+   </layout>
   </widget>
   <widget class="QMenuBar" name="menu_bar">
    <property name="geometry">
@@ -47,7 +55,7 @@
      <x>0</x>
      <y>0</y>
      <width>518</width>
-     <height>30</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_file">
@@ -55,8 +63,6 @@
      <string>&amp;File</string>
     </property>
     <addaction name="action_open"/>
-    <addaction name="action_play"/>
-    <addaction name="action_pause"/>
     <addaction name="action_exit"/>
    </widget>
    <widget class="QMenu" name="menu_window">
@@ -96,7 +102,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="resources.qrc"/>
+  <include location="../../resources/resources.qrc"/>
  </resources>
  <connections/>
 </ui>
