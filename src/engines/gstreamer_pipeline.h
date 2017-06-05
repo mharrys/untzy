@@ -41,8 +41,7 @@ public:
         error
     };
 
-    class Observer {
-    public:
+    struct Observer {
         virtual void state_changed(State old_state, State new_state) = 0;
         virtual void message(Level level, const std::string& msg) = 0;
     };
@@ -79,6 +78,5 @@ private:
 
     std::vector<Observer*> observers;
 };
-
 
 #endif
