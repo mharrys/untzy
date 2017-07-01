@@ -16,7 +16,7 @@
 #ifndef VOLUME_H_INCLUDED
 #define VOLUME_H_INCLUDED
 
-// Describes a volume level.
+// Describes the audio volume.
 class Volume {
 public:
     // Create a new volume with current level set to max.
