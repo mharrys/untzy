@@ -29,7 +29,7 @@
 class Player;
 
 namespace Ui {
-class main_window;
+class mainWindow;
 }
 
 class Main_window : public QMainWindow
@@ -49,7 +49,7 @@ private slots:
     void decrease_volume();
     void show_engine_output();
 private:
-    Ui::main_window* ui;
+    Ui::mainWindow* ui;
     std::unique_ptr<Player> player;
     QFileInfo current_song;
     Volume volume;

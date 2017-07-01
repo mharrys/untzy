@@ -26,20 +26,20 @@ Main_window::Main_window(std::unique_ptr<Player> player,
                          QWidget* parent) :
     player(std::move(player)),
     QMainWindow(parent),
-    ui(new Ui::main_window)
+    ui(new Ui::mainWindow)
 {
     ui->setupUi(this);
-    connect(ui->action_open,  &QAction::triggered, this, &Main_window::open_file);
-    connect(ui->action_exit,  &QAction::triggered, this, &Main_window::close);
+    connect(ui->openFileAction,  &QAction::triggered, this, &Main_window::open_file);
+    connect(ui->exitAction,  &QAction::triggered, this, &Main_window::close);
     connect(this->player.get(), &Player::playing, [=]() {
         setWindowTitle(current_song.baseName());
     });
-    connect(ui->play_button,  &QPushButton::clicked, this, &Main_window::play);
-    connect(ui->pause_button, &QPushButton::clicked, this, &Main_window::pause);
-    connect(ui->inc_vol, &QPushButton::clicked, this, &Main_window::increase_volume);
-    connect(ui->dec_vol, &QPushButton::clicked, this, &Main_window::decrease_volume);
-    connect(ui->action_engine_output, &QAction::triggered, this, &Main_window::show_engine_output);
-    connect(logger.get(), &Logger::new_message, [=](Logger::Tag tag, Logger::Level level, const QString& msg) {
+    connect(ui->playButton,  &QPushButton::clicked, this, &Main_window::play);
+    connect(ui->pauseButton, &QPushButton::clicked, this, &Main_window::pause);
+    connect(ui->incVolumeButton, &QPushButton::clicked, this, &Main_window::increase_volume);
+    connect(ui->decVolumeButton, &QPushButton::clicked, this, &Main_window::decrease_volume);
+    connect(ui->viewEngineOutputAction, &QAction::triggered, this, &Main_window::show_engine_output);
+    connect(logger.get(), &Logger::new_message, [=](Logger::Tag, Logger::Level level, const QString& msg) {
         auto title = "Untzy";
         if (level == Logger::Level::warning)
             QMessageBox::warning(NULL, title, msg);

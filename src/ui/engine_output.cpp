@@ -18,9 +18,9 @@
 
 #include <QScrollBar>
 
-Engine_output::Engine_output(QWidget *parent) :
+Engine_output::Engine_output(QWidget* parent) :
     QWidget(parent),
-    ui(new Ui::Engine_output)
+    ui(new Ui::engineOutputWidget)
 {
     ui->setupUi(this);
 }
@@ -32,7 +32,7 @@ Engine_output::~Engine_output()
 
 void Engine_output::new_message(Engine::Level level, const QString& msg)
 {
-    ui->text_output->insertPlainText(msg + "\n");
-    auto sb = ui->text_output->verticalScrollBar();
+    ui->outputText->insertPlainText(msg + "\n");
+    auto sb = ui->outputText->verticalScrollBar();
     sb->setValue(sb->maximum());
 }

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>main_window</class>
- <widget class="QMainWindow" name="main_window">
+ <class>mainWindow</class>
+ <widget class="QMainWindow" name="mainWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,33 +13,33 @@
   <property name="windowTitle">
    <string>Untzy</string>
   </property>
-  <widget class="QWidget" name="central_widget">
+  <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QPushButton" name="play_button">
+       <widget class="QPushButton" name="playButton">
         <property name="text">
          <string>Play</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="pause_button">
+       <widget class="QPushButton" name="pauseButton">
         <property name="text">
          <string>Pause</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="dec_vol">
+       <widget class="QPushButton" name="decVolumeButton">
         <property name="text">
          <string>Decrease Volume</string>
         </property>
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="inc_vol">
+       <widget class="QPushButton" name="incVolumeButton">
         <property name="text">
          <string>Increase Volume</string>
         </property>
@@ -49,7 +49,7 @@
     </item>
    </layout>
   </widget>
-  <widget class="QMenuBar" name="menu_bar">
+  <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
     <rect>
      <x>0</x>
@@ -58,23 +58,23 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menu_file">
+   <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
     </property>
-    <addaction name="action_open"/>
-    <addaction name="action_exit"/>
+    <addaction name="openFileAction"/>
+    <addaction name="exitAction"/>
    </widget>
-   <widget class="QMenu" name="menu_window">
+   <widget class="QMenu" name="menuWindow">
     <property name="title">
      <string>&amp;Window</string>
     </property>
-    <addaction name="action_engine_output"/>
+    <addaction name="viewEngineOutputAction"/>
    </widget>
-   <addaction name="menu_file"/>
-   <addaction name="menu_window"/>
+   <addaction name="menuFile"/>
+   <addaction name="menuWindow"/>
   </widget>
-  <action name="action_open">
+  <action name="openFileAction">
    <property name="text">
     <string>&amp;Open...</string>
    </property>
@@ -89,20 +89,18 @@
     <string>P&amp;ause</string>
    </property>
   </action>
-  <action name="action_exit">
+  <action name="exitAction">
    <property name="text">
     <string>E&amp;xit</string>
    </property>
   </action>
-  <action name="action_engine_output">
+  <action name="viewEngineOutputAction">
    <property name="text">
     <string>Engine output</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="../../resources/resources.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

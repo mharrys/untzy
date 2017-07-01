@@ -21,7 +21,7 @@
 #include <QWidget>
 
 namespace Ui {
-class Engine_output;
+class engineOutputWidget;
 }
 
 // The responsibility of this class is to display engine messages.
@@ -29,12 +29,12 @@ class Engine_output : public QWidget
 {
     Q_OBJECT
 public:
-    explicit Engine_output(QWidget *parent = 0);
+    explicit Engine_output(QWidget* parent = 0);
     ~Engine_output();
 public slots:
     void new_message(Engine::Level level, const QString& msg);
 private:
-    Ui::Engine_output* ui;
+    Ui::engineOutputWidget* ui;
 };
 
 #endif
