@@ -79,12 +79,12 @@
     <string>&amp;Open...</string>
    </property>
   </action>
-  <action name="action_play">
+  <action name="playFileAction">
    <property name="text">
     <string>&amp;Play</string>
    </property>
   </action>
-  <action name="action_pause">
+  <action name="pauseFileAction">
    <property name="text">
     <string>P&amp;ause</string>
    </property>
