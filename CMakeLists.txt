@@ -12,7 +12,9 @@ find_package(Qt5 COMPONENTS Widgets)
 find_package(PkgConfig REQUIRED)
 
 pkg_check_modules(GSTREAMER REQUIRED gstreamer-1.0)
-
 include_directories(${GSTREAMER_INCLUDE_DIRS})
+
+add_subdirectory(lib/taglib)
+include_directories("${CMAKE_BINARY_DIR}/lib/taglib/headers/taglib")
 
 add_subdirectory(src)
