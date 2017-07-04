@@ -18,3 +18,4 @@ add_subdirectory(lib/taglib)
 include_directories("${CMAKE_BINARY_DIR}/lib/taglib/headers/taglib")
 
 add_subdirectory(src)
+add_subdirectory(tools/taglib)
