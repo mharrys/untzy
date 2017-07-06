@@ -43,4 +43,5 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
     ${GSTREAMER_LIBRARIES}
     Qt5::Widgets
+    tag
 )
