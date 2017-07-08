@@ -12,7 +12,7 @@ From root directory:
 
     $ mkdir bin
     $ cd bin
-    $ cmake ..
+    $ cmake -DCMAKE_BUILD_TYPE=Release ..
     $ make
 
 ## Run all tests
