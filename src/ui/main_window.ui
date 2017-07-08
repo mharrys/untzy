@@ -7,16 +7,16 @@
     <x>0</x>
     <y>0</y>
     <width>518</width>
-    <height>391</height>
+    <height>458</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Untzy</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <layout class="QVBoxLayout" name="verticalLayout">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
+     <layout class="QHBoxLayout" name="playerControlLayout">
       <item>
        <widget class="QPushButton" name="playButton">
         <property name="text">
@@ -46,6 +46,9 @@
        </widget>
       </item>
      </layout>
+    </item>
+    <item>
+     <widget class="Playlist_widget" name="playlistWidget" native="true"/>
     </item>
    </layout>
   </widget>
@@ -101,6 +104,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>Playlist_widget</class>
+   <extends>QWidget</extends>
+   <header>ui/playlist_widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

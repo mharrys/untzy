@@ -27,6 +27,7 @@
 #include <memory>
 
 class Player;
+class Song;
 
 namespace Ui {
 class mainWindow;
@@ -41,6 +42,8 @@ public:
         std::shared_ptr<Logger> logger,
         QWidget* parent = nullptr);
     ~Main_window();
+signals:
+    void song_loaded(const Song& song);
 private slots:
     void open_file();
     void play();

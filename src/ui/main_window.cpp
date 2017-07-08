@@ -48,6 +48,8 @@ Main_window::Main_window(std::unique_ptr<Player> player,
             QMessageBox::critical(NULL, title, msg);
     });
     connect(this->player->get_engine(), &Engine::new_message, &engine_output, &Engine_output::new_message);
+    connect(this, &Main_window::song_loaded, this->player.get(), &Player::load);
+    connect(this, &Main_window::song_loaded, ui->playlistWidget, &Playlist_widget::append_song);
 }
 
 Main_window::~Main_window()
@@ -63,7 +65,8 @@ void Main_window::open_file()
         current_song = QFileInfo(filename);
         auto url = QUrl::fromLocalFile(current_song.absoluteFilePath());
         try {
-            player->load(Song::make(url));
+            auto song = Song::make(url);
+            emit song_loaded(song);
         } catch (std::runtime_error& e) {
             auto msg = QObject::tr("Unable to load song. Reason: %1").arg(e.what());
             QMessageBox::warning(NULL, "Untzy", msg);
