@@ -12,6 +12,7 @@ set(SOURCES
     core/player.cpp
     core/volume.cpp
     core/duration.cpp
+    core/song.cpp
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
     engines/gstreamer_thread.cpp
@@ -24,6 +25,7 @@ set(HEADERS
     core/player.h
     core/volume.h
     core/duration.h
+    core/song.h
     engines/engine.h
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h
