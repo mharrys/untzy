@@ -17,6 +17,7 @@
 #include "ui_main_window.h"
 
 #include "core/player.h"
+#include "core/song.h"
 
 #include <QMessageBox>
 #include <QStandardPaths>
@@ -61,7 +62,12 @@ void Main_window::open_file()
     if (!filename.isEmpty()) {
         current_song = QFileInfo(filename);
         auto url = QUrl::fromLocalFile(current_song.absoluteFilePath());
-        player->load(url);
+        try {
+            player->load(Song::make(url));
+        } catch (std::runtime_error& e) {
+            auto msg = QObject::tr("Unable to load song. Reason: %1").arg(e.what());
+            QMessageBox::warning(NULL, "Untzy", msg);
+        }
     }
 }
 

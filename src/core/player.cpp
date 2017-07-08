@@ -16,7 +16,10 @@
 #include "player.h"
 
 #include "core/volume.h"
+#include "core/song.h"
 #include "engines/engine.h"
+
+#include <QUrl>
 
 Player::Player(QObject* parent)
     : QObject(parent)
@@ -29,9 +32,9 @@ Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
 {
 }
 
-void Player_impl::load(const QUrl& url)
+void Player_impl::load(const Song& song)
 {
-    engine->load(url);
+    engine->load(song.get_source());
 }
 
 void Player_impl::play()

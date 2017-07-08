@@ -17,12 +17,14 @@
 #define PLAYER_H_INCLUDED
 
 #include <QObject>
-#include <QUrl>
 
 #include <memory>
 
 class Engine;
 class Volume;
+class Song;
+
+class QUrl;
 
 // The responsibility of this class is provide an interface to interact with
 // the audio engine.
@@ -31,7 +33,7 @@ class Player : public QObject {
 public:
     explicit Player(QObject* parent = nullptr);
 public slots:
-    virtual void load(const QUrl& url) = 0;
+    virtual void load(const Song& song) = 0;
     virtual void play() = 0;
     virtual void pause() = 0;
     virtual void set_volume(const Volume& volume) = 0;
@@ -45,7 +47,7 @@ signals:
 class Player_impl : public Player {
 public:
     explicit Player_impl(std::unique_ptr<Engine> engine, QObject* parent = nullptr);
-    void load(const QUrl& url);
+    void load(const Song& song);
     void play() final;
     void pause() final;
     void set_volume(const Volume& volume) final;

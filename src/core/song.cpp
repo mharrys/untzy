@@ -23,9 +23,10 @@
 
 Song Song::make(const QUrl& source)
 {
-    TagLib::FileRef file_ref(source.toString().toStdString().c_str()); // trainwreck!!
+    auto file_path = source.toString(QUrl::PreferLocalFile);
+    TagLib::FileRef file_ref(file_path.toStdString().c_str());
     if (file_ref.isNull()) {
-        auto err = QObject::tr("Unable to read song details: File not found");
+        auto err = QObject::tr("Unable to read song tags because the file is not found!");
         throw std::runtime_error(err.toStdString());
     }
 
