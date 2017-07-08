@@ -11,6 +11,7 @@ set(SOURCES
     core/logger.cpp
     core/player.cpp
     core/volume.cpp
+    core/duration.cpp
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
     engines/gstreamer_thread.cpp
@@ -22,6 +23,7 @@ set(HEADERS
     core/logger.h
     core/player.h
     core/volume.h
+    core/duration.h
     engines/engine.h
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h
