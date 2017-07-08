@@ -31,27 +31,17 @@ class QUrl;
 class Player : public QObject {
     Q_OBJECT
 public:
-    explicit Player(QObject* parent = nullptr);
+    explicit Player(std::unique_ptr<Engine> engine, QObject* parent = nullptr);
 public slots:
-    virtual void load(const Song& song) = 0;
-    virtual void play() = 0;
-    virtual void pause() = 0;
-    virtual void set_volume(const Volume& volume) = 0;
-    virtual Engine* get_engine() = 0;
+    void load(const Song& song);
+    void play();
+    void pause();
+    void set_volume(const Volume& volume);
+    Engine* get_engine();
 signals:
     void playing();
     void paused();
     void volume_changed(const Volume& volume);
-};
-
-class Player_impl : public Player {
-public:
-    explicit Player_impl(std::unique_ptr<Engine> engine, QObject* parent = nullptr);
-    void load(const Song& song);
-    void play() final;
-    void pause() final;
-    void set_volume(const Volume& volume) final;
-    Engine* get_engine() final;
 private:
     std::unique_ptr<Engine> engine;
 };

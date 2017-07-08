@@ -21,41 +21,36 @@
 
 #include <QUrl>
 
-Player::Player(QObject* parent)
-    : QObject(parent)
-{
-}
-
-Player_impl::Player_impl(std::unique_ptr<Engine> engine, QObject* parent)
+Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
     : engine(std::move(engine)),
-      Player(parent)
+      QObject(parent)
 {
 }
 
-void Player_impl::load(const Song& song)
+void Player::load(const Song& song)
 {
     engine->load(song.get_source());
 }
 
-void Player_impl::play()
+void Player::play()
 {
     engine->play();
     emit playing();
 }
 
-void Player_impl::pause()
+void Player::pause()
 {
     engine->pause();
     emit paused();
 }
 
-void Player_impl::set_volume(const Volume& volume)
+void Player::set_volume(const Volume& volume)
 {
     engine->set_volume(volume);
     emit volume_changed(volume);
 }
 
-Engine* Player_impl::get_engine()
+Engine* Player::get_engine()
 {
     return engine.get();
 }

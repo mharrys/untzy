@@ -34,7 +34,7 @@ int main(int argc, char* argv[])
         return 1;
     }
 
-    auto player = std::make_unique<Player_impl>(std::move(engine));
+    auto player = std::make_unique<Player>(std::move(engine));
 
     auto logger = std::make_shared<Logger>();
     Main_window main_window(std::move(player), logger);
