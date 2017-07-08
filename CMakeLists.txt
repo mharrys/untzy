@@ -17,5 +17,8 @@ include_directories(${GSTREAMER_INCLUDE_DIRS})
 add_subdirectory(lib/taglib)
 include_directories("${CMAKE_BINARY_DIR}/lib/taglib/headers/taglib")
 
+add_subdirectory(lib/googletest)
+
 add_subdirectory(src)
+add_subdirectory(test)
 add_subdirectory(tools/taglib)
