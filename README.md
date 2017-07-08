@@ -13,7 +13,7 @@ From root directory:
     $ mkdir bin
     $ cd bin
     $ cmake -DCMAKE_BUILD_TYPE=Release ..
-    $ make
+    $ make -j8
 
 ## Run all tests
 From build directory:
