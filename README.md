@@ -8,8 +8,19 @@ Install development packages for Qt5 (>= 5.6.0) and GStreamer 1.0.
 Install gst-plugins-ugly for Mp3 support.
 
 ## Build
+From root directory:
 
     $ mkdir bin
     $ cd bin
     $ cmake ..
     $ make
+
+## Run all tests
+From build directory:
+
+    $ ./test/run_all_tests
+
+## Run Untzy
+From build directory:
+
+    $ ./untzy
