@@ -25,8 +25,6 @@ int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
 
-    auto logger = std::make_shared<Logger>();
-
     std::unique_ptr<Engine> engine;
     try {
         engine = GStreamer_engine::make();
@@ -38,6 +36,7 @@ int main(int argc, char* argv[])
 
     auto player = std::make_unique<Player_impl>(std::move(engine));
 
+    auto logger = std::make_shared<Logger>();
     Main_window main_window(std::move(player), logger);
     main_window.show();
 
