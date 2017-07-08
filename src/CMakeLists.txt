@@ -32,16 +32,24 @@ set(HEADERS
 
 set(EXECUTABLE_OUTPUT_PATH ..)
 
-add_executable(${PROJECT_NAME}
-    main.cpp
+# build lib for test to depend on
+add_library(untzy_lib
     ${SOURCES}
     ${HEADERS}
     ${UI}
     ${RESOURCES}
 )
 
-target_link_libraries(${PROJECT_NAME}
+add_executable(${PROJECT_NAME}
+    main.cpp
+)
+
+target_link_libraries(untzy_lib
     ${GSTREAMER_LIBRARIES}
     Qt5::Widgets
     tag
+)
+
+target_link_libraries(${PROJECT_NAME}
+    untzy_lib
 )
