@@ -118,6 +118,11 @@ void Main_window::init()
         player->load(song);
         player->play();
     });
+
+    // user drops a file in playlist
+    connect(ui->playlistWidget, &Playlist_widget::drop_file, [=](const QUrl& url) {
+        create_song(url);
+    });
 }
 
 void Main_window::create_song(const QUrl& url)

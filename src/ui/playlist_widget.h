@@ -34,7 +34,10 @@ public slots:
     void append_song(const Song& song);
 signals:
     void select_song(const Song& song);
+    void drop_file(const QUrl& url);
 private:
+    void init();
+
     Ui::playlistWidget* ui;
     Playlist_model playlist_model;
 };

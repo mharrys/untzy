@@ -30,12 +30,17 @@ public:
     // Return song at specified index.
     Song get_song(const QModelIndex& index) const;
 
-    // Minimal list model override
+    // List model override
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
     QModelIndex index(int row, int column, const QModelIndex&parent = QModelIndex()) const override;
     int rowCount(const QModelIndex& parent = QModelIndex()) const override;
-    int columnCount(const QModelIndex &parent = QModelIndex()) const override;
+    int columnCount(const QModelIndex& parent = QModelIndex()) const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
+    bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const override;
+    bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
+signals:
+    void drop_file(const QUrl& url);
 private:
     QList<Song> songs;
 };

@@ -15,6 +15,8 @@
 
 #include "playlist_model.h"
 
+#include <QMimeData>
+
 Playlist_model::Playlist_model(QObject* parent)
     : QAbstractListModel(parent)
 {
@@ -74,4 +76,23 @@ int Playlist_model::rowCount(const QModelIndex&) const
 int Playlist_model::columnCount(const QModelIndex&) const
 {
     return 4;
+}
+
+Qt::ItemFlags Playlist_model::flags(const QModelIndex& index) const
+{
+    return QAbstractItemModel::flags(index) | Qt::ItemIsDropEnabled;
+}
+
+bool Playlist_model::canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const
+{
+    // accept all types of data and let the loader determine if valid or not
+    return true;
+}
+
+bool Playlist_model::dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent)
+{
+    auto urls = data->urls();
+    for (auto url : urls)
+        emit drop_file(url);
+    return true;
 }

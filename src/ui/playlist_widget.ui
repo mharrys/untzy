@@ -31,8 +31,8 @@
    </property>
    <item>
     <widget class="QTableView" name="tableView">
-     <property name="alternatingRowColors">
-      <bool>false</bool>
+     <property name="acceptDrops">
+      <bool>true</bool>
      </property>
      <property name="selectionBehavior">
       <enum>QAbstractItemView::SelectRows</enum>

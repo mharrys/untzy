@@ -20,12 +20,7 @@ Playlist_widget::Playlist_widget(QWidget* parent)
     : QWidget(parent),
       ui(new Ui::playlistWidget)
 {
-    ui->setupUi(this);
-    ui->tableView->setModel(&playlist_model);
-    connect(ui->tableView, &QTableView::doubleClicked, [=](const QModelIndex& index) {
-        auto song = playlist_model.get_song(index);
-        emit select_song(song);
-    });
+    init();
 }
 
 Playlist_widget::~Playlist_widget()
@@ -36,4 +31,17 @@ Playlist_widget::~Playlist_widget()
 void Playlist_widget::append_song(const Song& song)
 {
     playlist_model.append_song(song);
+}
+
+void Playlist_widget::init()
+{
+    ui->setupUi(this);
+    ui->tableView->setModel(&playlist_model);
+    connect(ui->tableView, &QTableView::doubleClicked, [=](const QModelIndex& index) {
+        auto song = playlist_model.get_song(index);
+        emit select_song(song);
+    });
+    connect(&playlist_model, &Playlist_model::drop_file, [=](const QUrl& url) {
+        emit drop_file(url);
+    });
 }
