@@ -18,7 +18,6 @@
 
 #include "engine_output.h"
 
-#include "core/logger.h"
 #include "core/volume.h"
 
 #include <QFileDialog>
@@ -26,7 +25,9 @@
 
 #include <memory>
 
+class Logger;
 class Player;
+class Song;
 
 namespace Ui {
 class mainWindow;
@@ -36,21 +37,26 @@ class Main_window : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit Main_window(
-        std::unique_ptr<Player> player,
-        std::shared_ptr<Logger> logger,
-        QWidget* parent = nullptr);
+    explicit Main_window(std::unique_ptr<Player> player,
+                         std::shared_ptr<Logger> logger,
+                         QWidget* parent = nullptr);
     ~Main_window();
+signals:
+    void song_created(const Song& song);
 private slots:
-    void open_file();
+    void open_song();
     void play();
     void pause();
     void increase_volume();
     void decrease_volume();
     void show_engine_output();
 private:
+    void init();
+    void create_song(const QUrl& url);
+
     Ui::mainWindow* ui;
     std::unique_ptr<Player> player;
+    std::shared_ptr<Logger> logger;
     QFileInfo current_song;
     Volume volume;
     Engine_output engine_output;

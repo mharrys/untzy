@@ -5,6 +5,7 @@ qt5_add_resources(RESOURCES
 qt5_wrap_ui(UI
     ui/main_window.ui
     ui/engine_output.ui
+    ui/playlist_widget.ui
 )
 
 set(SOURCES
@@ -16,8 +17,10 @@ set(SOURCES
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
     engines/gstreamer_thread.cpp
+    playlist/playlist_model.cpp
     ui/main_window.cpp
     ui/engine_output.cpp
+    ui/playlist_widget.cpp
 )
 
 set(HEADERS
@@ -30,8 +33,10 @@ set(HEADERS
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h
     engines/gstreamer_thread.h
+    playlist/playlist_model.h
     ui/main_window.h
     ui/engine_output.h
+    ui/playlist_widget.h
 )
 
 set(EXECUTABLE_OUTPUT_PATH ..)

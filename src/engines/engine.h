@@ -27,6 +27,7 @@ class Engine : public QObject {
 public:
     // Describes current state.
     enum class State {
+        ready,
         paused,
         playing,
         ended

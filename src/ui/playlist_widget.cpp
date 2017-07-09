@@ -13,44 +13,27 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "player.h"
+#include "playlist_widget.h"
+#include "ui_playlist_widget.h"
 
-#include "volume.h"
-#include "song.h"
-#include "engines/engine.h"
-
-#include <QUrl>
-
-Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
-    : engine(std::move(engine)),
-      QObject(parent)
+Playlist_widget::Playlist_widget(QWidget* parent)
+    : QWidget(parent),
+      ui(new Ui::playlistWidget)
 {
+    ui->setupUi(this);
+    ui->tableView->setModel(&playlist_model);
+    connect(ui->tableView, &QTableView::doubleClicked, [=](const QModelIndex& index) {
+        auto song = playlist_model.get_song(index);
+        emit select_song(song);
+    });
 }
 
-void Player::load(const Song& song)
+Playlist_widget::~Playlist_widget()
 {
-    engine->load(song.get_source());
+    delete ui;
 }
 
-void Player::play()
+void Playlist_widget::append_song(const Song& song)
 {
-    engine->play();
-    emit playing();
-}
-
-void Player::pause()
-{
-    engine->pause();
-    emit paused();
-}
-
-void Player::set_volume(const Volume& volume)
-{
-    engine->set_volume(volume);
-    emit volume_changed(volume);
-}
-
-Engine* Player::get_engine()
-{
-    return engine.get();
+    playlist_model.append_song(song);
 }

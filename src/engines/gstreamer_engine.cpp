@@ -60,7 +60,9 @@ void GStreamer_engine::state_changed(GStreamer_pipeline::State,
                                      GStreamer_pipeline::State state)
 {
     // only send available states
-    if (state == GStreamer_pipeline::State::paused)
+    if (state == GStreamer_pipeline::State::ready)
+        emit new_state(State::ready);
+    else if (state == GStreamer_pipeline::State::paused)
         emit new_state(State::paused);
     else if (state == GStreamer_pipeline::State::playing)
         emit new_state(State::playing);
