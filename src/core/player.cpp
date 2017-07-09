@@ -15,8 +15,8 @@
 
 #include "player.h"
 
-#include "core/volume.h"
-#include "core/song.h"
+#include "volume.h"
+#include "song.h"
 #include "engines/engine.h"
 
 #include <QUrl>
