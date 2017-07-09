@@ -27,6 +27,11 @@ void Playlist_model::append_song(const Song& song)
     endInsertRows();
 }
 
+Song Playlist_model::get_song(const QModelIndex& index) const
+{
+    return songs.at(index.row());
+}
+
 QVariant Playlist_model::data(const QModelIndex& index, int role) const
 {
     // map data to each column

@@ -27,6 +27,8 @@ public:
 
     // Append song to end of playlist
     void append_song(const Song& song);
+    // Return song at specified index.
+    Song get_song(const QModelIndex& index) const;
 
     // Minimal list model override
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
