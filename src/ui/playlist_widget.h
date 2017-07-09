@@ -32,6 +32,8 @@ public:
     ~Playlist_widget();
 public slots:
     void append_song(const Song& song);
+signals:
+    void select_song(const Song& song);
 private:
     Ui::playlistWidget* ui;
     Playlist_model playlist_model;

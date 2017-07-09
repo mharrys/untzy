@@ -22,6 +22,10 @@ Playlist_widget::Playlist_widget(QWidget* parent)
 {
     ui->setupUi(this);
     ui->tableView->setModel(&playlist_model);
+    connect(ui->tableView, &QTableView::doubleClicked, [=](const QModelIndex& index) {
+        auto song = playlist_model.get_song(index);
+        emit select_song(song);
+    });
 }
 
 Playlist_widget::~Playlist_widget()

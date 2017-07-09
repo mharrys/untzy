@@ -16,6 +16,7 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 
+#include "core/logger.h"
 #include "core/player.h"
 #include "core/song.h"
 
@@ -24,32 +25,13 @@
 
 Main_window::Main_window(std::unique_ptr<Player> player,
                          std::shared_ptr<Logger> logger,
-                         QWidget* parent) :
-    player(std::move(player)),
-    QMainWindow(parent),
-    ui(new Ui::mainWindow)
+                         QWidget* parent)
+    : QMainWindow(parent),
+      player(std::move(player)),
+      logger(logger),
+      ui(new Ui::mainWindow)
 {
-    ui->setupUi(this);
-    connect(ui->openFileAction,  &QAction::triggered, this, &Main_window::open_file);
-    connect(ui->exitAction,  &QAction::triggered, this, &Main_window::close);
-    connect(this->player.get(), &Player::playing, [=]() {
-        setWindowTitle(current_song.baseName());
-    });
-    connect(ui->playButton,  &QPushButton::clicked, this, &Main_window::play);
-    connect(ui->pauseButton, &QPushButton::clicked, this, &Main_window::pause);
-    connect(ui->incVolumeButton, &QPushButton::clicked, this, &Main_window::increase_volume);
-    connect(ui->decVolumeButton, &QPushButton::clicked, this, &Main_window::decrease_volume);
-    connect(ui->viewEngineOutputAction, &QAction::triggered, this, &Main_window::show_engine_output);
-    connect(logger.get(), &Logger::new_message, [=](Logger::Tag, Logger::Level level, const QString& msg) {
-        auto title = "Untzy";
-        if (level == Logger::Level::warning)
-            QMessageBox::warning(NULL, title, msg);
-        else if (level == Logger::Level::critical)
-            QMessageBox::critical(NULL, title, msg);
-    });
-    connect(this->player->get_engine(), &Engine::new_message, &engine_output, &Engine_output::new_message);
-    connect(this, &Main_window::song_loaded, this->player.get(), &Player::load);
-    connect(this, &Main_window::song_loaded, ui->playlistWidget, &Playlist_widget::append_song);
+    init();
 }
 
 Main_window::~Main_window()
@@ -57,20 +39,14 @@ Main_window::~Main_window()
     delete ui;
 }
 
-void Main_window::open_file()
+void Main_window::open_song()
 {
     auto dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     auto filename = QFileDialog::getOpenFileName(this, tr("Open File"), dir);
     if (!filename.isEmpty()) {
         current_song = QFileInfo(filename);
         auto url = QUrl::fromLocalFile(current_song.absoluteFilePath());
-        try {
-            auto song = Song::make(url);
-            emit song_loaded(song);
-        } catch (std::runtime_error& e) {
-            auto msg = QObject::tr("Unable to load song. Reason: %1").arg(e.what());
-            QMessageBox::warning(NULL, "Untzy", msg);
-        }
+        create_song(url);
     }
 }
 
@@ -99,4 +75,59 @@ void Main_window::decrease_volume()
 void Main_window::show_engine_output()
 {
     engine_output.show();
+}
+
+void Main_window::init()
+{
+    ui->setupUi(this);
+
+    connect(ui->openFileAction,  &QAction::triggered, this, &Main_window::open_song);
+    connect(ui->exitAction,  &QAction::triggered, this, &Main_window::close);
+    connect(ui->playButton,  &QPushButton::clicked, this, &Main_window::play);
+    connect(ui->pauseButton, &QPushButton::clicked, this, &Main_window::pause);
+    connect(ui->incVolumeButton, &QPushButton::clicked, this, &Main_window::increase_volume);
+    connect(ui->decVolumeButton, &QPushButton::clicked, this, &Main_window::decrease_volume);
+    connect(ui->viewEngineOutputAction, &QAction::triggered, this, &Main_window::show_engine_output);
+
+    // present logged messages with a GUI instead of to terminal
+    connect(logger.get(), &Logger::new_message, [=](Logger::Tag, Logger::Level level, const QString& msg) {
+        auto title = "Untzy";
+        if (level == Logger::Level::warning)
+            QMessageBox::warning(NULL, title, msg);
+        else if (level == Logger::Level::critical)
+            QMessageBox::critical(NULL, title, msg);
+    });
+
+    // change window title whenever a new song is playing
+    connect(player.get(), &Player::playing, [=]() {
+        setWindowTitle(current_song.baseName());
+    });
+
+    // view all messages produced by the audio engine
+    connect(player->get_engine(), &Engine::new_message, &engine_output, &Engine_output::new_message);
+
+    // user opened new song through file browser
+    connect(this, &Main_window::song_created, [=](const Song& song) {
+        ui->playlistWidget->append_song(song);
+        player->load(song);
+        player->play();
+    });
+
+    // user double clicks on song in playlist
+    connect(ui->playlistWidget, &Playlist_widget::select_song, [=](const Song& song) {
+        player->load(song);
+        player->play();
+    });
+}
+
+void Main_window::create_song(const QUrl& url)
+{
+    try {
+        auto song = Song::make(url);
+        emit song_created(song);
+    } catch (std::runtime_error& e) {
+        auto msg = QObject::tr("Unable to load song \"%1\". Reason: %2");
+        auto msgArgs = msg.arg(url.toString(), e.what());
+        logger->warn(Logger::Tag::core, msgArgs);
+    }
 }
