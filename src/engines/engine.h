@@ -18,6 +18,7 @@
 
 #include <QObject>
 
+class Duration;
 class Volume;
 
 // The responsibility of this class is to provide an interface for a
@@ -49,6 +50,10 @@ public:
     virtual void pause() = 0;
     // Set volume level.
     virtual void set_volume(const Volume& volume) = 0;
+    // Set seek position in seconds.
+    virtual void set_seek_position(long seek_pos) = 0;
+    // Get seek position in seconds.
+    virtual long get_seek_position() = 0;
 signals:
     void new_state(State state);
     void new_message(Level level, const QString& msg);

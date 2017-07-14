@@ -49,6 +49,10 @@ Song Song::make(const QUrl& source)
     return Song(source, title, artist, duration);
 }
 
+Song::Song()
+{
+}
+
 Song::Song(const QUrl& source,
            const QString& title,
            const QString& artist,

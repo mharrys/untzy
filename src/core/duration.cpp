@@ -27,7 +27,7 @@ Duration::Duration()
 {
 }
 
-Duration::Duration(int length)
+Duration::Duration(time_unit length)
     : unknown(false)
 {
     seconds = length % 60;
@@ -62,6 +62,11 @@ time_unit Duration::get_minutes() const
 time_unit Duration::get_seconds() const
 {
     return seconds;
+}
+
+time_unit Duration::get_length() const
+{
+    return hours * 60 * 60 + minutes * 60 + seconds;
 }
 
 QString Duration::get_str() const

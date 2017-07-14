@@ -15,6 +15,7 @@
 
 #include "gstreamer_engine.h"
 
+#include "core/duration.h"
 #include "core/volume.h"
 
 #include <QUrl>
@@ -54,6 +55,16 @@ void GStreamer_engine::pause()
 void GStreamer_engine::set_volume(const Volume& volume)
 {
     pipeline->set_volume(volume.get_level());
+}
+
+void GStreamer_engine::set_seek_position(long seek_pos)
+{
+    pipeline->set_seek_position(seek_pos);
+}
+
+long GStreamer_engine::get_seek_position()
+{
+    return pipeline->get_seek_position();
 }
 
 void GStreamer_engine::state_changed(GStreamer_pipeline::State,

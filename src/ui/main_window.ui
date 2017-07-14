@@ -45,6 +45,9 @@
         </property>
        </widget>
       </item>
+      <item>
+       <widget class="Seeker_widget" name="seekerWidget" native="true"/>
+      </item>
      </layout>
     </item>
     <item>
@@ -109,6 +112,12 @@
    <class>Playlist_widget</class>
    <extends>QWidget</extends>
    <header>ui/playlist_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Seeker_widget</class>
+   <extends>QWidget</extends>
+   <header>ui/seeker_widget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

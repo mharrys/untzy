@@ -18,7 +18,7 @@
 
 class QString;
 
-typedef unsigned int time_unit;
+typedef long time_unit;
 
 // Describes the audio duration.
 class Duration {
@@ -27,7 +27,7 @@ public:
     Duration();
 
     // Create duration from total length in seconds.
-    Duration(int length);
+    Duration(time_unit length);
 
     // Create duration from specified number of hours, minutes and seconds.
     explicit Duration(time_unit hours, time_unit minutes, time_unit seconds);
@@ -38,6 +38,8 @@ public:
     time_unit get_hours() const;
     time_unit get_minutes() const;
     time_unit get_seconds() const;
+    // Return total length in seconds.
+    time_unit get_length() const;
 
     // Return string representation of the duration.
     QString get_str() const;

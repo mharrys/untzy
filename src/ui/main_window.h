@@ -22,6 +22,7 @@
 
 #include <QFileDialog>
 #include <QMainWindow>
+#include <QTimer>
 
 #include <memory>
 
@@ -53,13 +54,14 @@ private slots:
 private:
     void init();
     void create_song(const QUrl& url);
+    void update_seeker();
 
     Ui::mainWindow* ui;
     std::unique_ptr<Player> player;
     std::shared_ptr<Logger> logger;
-    QFileInfo current_song;
     Volume volume;
     Engine_output engine_output;
+    QTimer progress_timer;
 };
 
 #endif
