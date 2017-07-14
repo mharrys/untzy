@@ -27,9 +27,10 @@ Main_window::Main_window(std::unique_ptr<Player> player,
                          std::shared_ptr<Logger> logger,
                          QWidget* parent)
     : QMainWindow(parent),
+      ui(new Ui::mainWindow),
       player(std::move(player)),
       logger(logger),
-      ui(new Ui::mainWindow)
+      volume(0.0, 1.0, 0.5)
 {
     init();
 }
@@ -123,6 +124,10 @@ void Main_window::init()
     connect(ui->playlistWidget, &Playlist_widget::drop_file, [=](const QUrl& url) {
         create_song(url);
     });
+
+    // start at 50%
+    volume.set_level(0.5);
+    player->set_volume(volume);
 }
 
 void Main_window::create_song(const QUrl& url)
