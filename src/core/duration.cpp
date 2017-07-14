@@ -27,7 +27,7 @@ Duration::Duration()
 {
 }
 
-Duration::Duration(int length)
+Duration::Duration(time_unit length)
     : unknown(false)
 {
     seconds = length % 60;
