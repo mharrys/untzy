@@ -45,7 +45,7 @@ void Main_window::open_song()
     auto dir = QStandardPaths::writableLocation(QStandardPaths::MusicLocation);
     auto filename = QFileDialog::getOpenFileName(this, tr("Open File"), dir);
     if (!filename.isEmpty()) {
-        current_song = QFileInfo(filename);
+        QFileInfo current_song(filename);
         auto url = QUrl::fromLocalFile(current_song.absoluteFilePath());
         create_song(url);
     }
@@ -99,9 +99,15 @@ void Main_window::init()
             QMessageBox::critical(NULL, title, msg);
     });
 
-    // change window title whenever a new song is playing
-    connect(player.get(), &Player::playing, [=]() {
-        setWindowTitle(current_song.baseName());
+    // new song is playing
+    connect(player.get(), &Player::playing, [=](const Song& song) {
+        setWindowTitle(song.get_source().fileName());
+        // seek bar must match the number of seconds of song
+        ui->seekerWidget->set_length(song.get_duration().get_length());
+        // query song progress every second
+        progress_timer.start(1000);
+        // refresh seeker in case of new song
+        update_seeker();
     });
 
     // view all messages produced by the audio engine
@@ -125,6 +131,14 @@ void Main_window::init()
         create_song(url);
     });
 
+    // user changed seeker position
+    connect(ui->seekerWidget, &Seeker_widget::changed_position, [=](long seek_pos) {
+        player->get_engine()->set_seek_position(seek_pos);
+    });
+
+    // update seeker position
+    connect(&progress_timer, &QTimer::timeout, this, &Main_window::update_seeker);
+
     // start at 50%
     volume.set_level(0.5);
     player->set_volume(volume);
@@ -140,4 +154,10 @@ void Main_window::create_song(const QUrl& url)
         auto msgArgs = msg.arg(url.toString(), e.what());
         logger->warn(Logger::Tag::core, msgArgs);
     }
+}
+
+void Main_window::update_seeker()
+{
+    auto seek_pos = player->get_engine()->get_seek_position();
+    ui->seekerWidget->set_position(seek_pos);
 }

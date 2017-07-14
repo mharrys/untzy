@@ -38,6 +38,8 @@ public:
     time_unit get_hours() const;
     time_unit get_minutes() const;
     time_unit get_seconds() const;
+    // Return total length in seconds.
+    time_unit get_length() const;
 
     // Return string representation of the duration.
     QString get_str() const;

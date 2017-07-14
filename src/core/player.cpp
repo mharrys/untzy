@@ -16,7 +16,6 @@
 #include "player.h"
 
 #include "volume.h"
-#include "song.h"
 #include "engines/engine.h"
 
 #include <QUrl>
@@ -29,13 +28,14 @@ Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
 
 void Player::load(const Song& song)
 {
+    current_song = song;
     engine->load(song.get_source());
 }
 
 void Player::play()
 {
     engine->play();
-    emit playing();
+    emit playing(current_song);
 }
 
 void Player::pause()

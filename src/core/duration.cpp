@@ -64,6 +64,11 @@ time_unit Duration::get_seconds() const
     return seconds;
 }
 
+time_unit Duration::get_length() const
+{
+    return hours * 60 * 60 + minutes * 60 + seconds;
+}
+
 QString Duration::get_str() const
 {
     if (unknown)

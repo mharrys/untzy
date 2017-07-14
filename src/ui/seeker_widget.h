@@ -13,39 +13,34 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLAYER_H_INCLUDED
-#define PLAYER_H_INCLUDED
+#ifndef SEEKER_WIDGET_H_INCLUDED
+#define SEEKER_WIDGET_H_INCLUDED
 
-#include "song.h"
+#include <QWidget>
 
-#include <QObject>
+namespace Ui {
+class seekerWidget;
+}
 
-#include <memory>
-
-class Engine;
-class Volume;
-
-class QUrl;
-
-// The responsibility of this class is provide an interface to interact with
-// the audio engine.
-class Player : public QObject {
+class Seeker_widget : public QWidget
+{
     Q_OBJECT
 public:
-    explicit Player(std::unique_ptr<Engine> engine, QObject* parent = nullptr);
+    explicit Seeker_widget(QWidget* parent = 0);
+    ~Seeker_widget();
 public slots:
-    void load(const Song& song);
-    void play();
-    void pause();
-    void set_volume(const Volume& volume);
-    Engine* get_engine();
+    // Set position in seconds unless user is currently dragging in seeker.
+    void set_position(long position);
+    // Set length in seconds.
+    void set_length(long length);
 signals:
-    void playing(const Song& song);
-    void paused();
-    void volume_changed(const Volume& volume);
+    // Seek position moved by user. Provided is the seek position in seconds.
+    void changed_position(long seek_pos);
 private:
-    std::unique_ptr<Engine> engine;
-    Song current_song;
+    void init();
+
+    Ui::seekerWidget* ui;
+    bool dragging;
 };
 
-#endif
+#endif // SEEKER_WIDGET_H

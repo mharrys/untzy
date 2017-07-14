@@ -29,11 +29,14 @@ public:
     // Create song from file on disk.
     static Song make(const QUrl& source);
 
+    // Create empty song.
+    Song();
+
     // Create a new song.
-    Song(const QUrl& source,
-         const QString& title,
-         const QString& artist,
-         const Duration& duration);
+    explicit Song(const QUrl& source,
+                  const QString& title,
+                  const QString& artist,
+                  const Duration& duration);
 
     // Return source to song. This could be a file path or a URL to a stream.
     QUrl get_source() const;

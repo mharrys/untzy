@@ -63,6 +63,10 @@ public:
     void set_state(State state);
     // Set volume level.
     void set_volume(double level);
+    // See seek position in seconds.
+    void set_seek_position(long seek_pos);
+    // Get seek position in seconds.
+    long get_seek_position();
 protected:
     // GStreamer thread callbacks
     void end_of_stream() override;

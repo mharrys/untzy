@@ -36,6 +36,8 @@ public:
     void play() final;
     void pause() final;
     void set_volume(const Volume& volume) final;
+    void set_seek_position(long seek_pos) final;
+    long get_seek_position() final;
 private:
     void state_changed(GStreamer_pipeline::State old_state,
                        GStreamer_pipeline::State new_state);

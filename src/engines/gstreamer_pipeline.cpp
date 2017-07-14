@@ -144,6 +144,26 @@ void GStreamer_pipeline::set_volume(double level )
     g_object_set(data.volume, "volume", level, NULL);
 }
 
+void GStreamer_pipeline::set_seek_position(long seek_pos)
+{
+    auto seek_flags = GST_SEEK_FLAG_FLUSH | GST_SEEK_FLAG_KEY_UNIT;
+    gst_element_seek_simple(
+        data.pipeline,
+        GST_FORMAT_TIME,
+        static_cast<GstSeekFlags>(seek_flags),
+        seek_pos * GST_SECOND);
+}
+
+long GStreamer_pipeline::get_seek_position()
+{
+    long pos_ns = 0;
+    gst_element_query_position(
+        data.pipeline,
+        GST_FORMAT_TIME,
+        &pos_ns);
+    return GST_TIME_AS_SECONDS(pos_ns);
+}
+
 void GStreamer_pipeline::end_of_stream()
 {
     notify_state_changed(State::playing, State::ended);
