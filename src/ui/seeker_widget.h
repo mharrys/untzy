@@ -43,4 +43,4 @@ private:
     bool dragging;
 };
 
-#endif // SEEKER_WIDGET_H
+#endif
