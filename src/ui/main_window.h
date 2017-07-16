@@ -18,8 +18,6 @@
 
 #include "engine_output.h"
 
-#include "core/volume.h"
-
 #include <QFileDialog>
 #include <QMainWindow>
 #include <QTimer>
@@ -48,8 +46,6 @@ private slots:
     void open_song();
     void play();
     void pause();
-    void increase_volume();
-    void decrease_volume();
     void show_engine_output();
 private:
     void init();
@@ -59,7 +55,6 @@ private:
     Ui::mainWindow* ui;
     std::unique_ptr<Player> player;
     std::shared_ptr<Logger> logger;
-    Volume volume;
     Engine_output engine_output;
     QTimer progress_timer;
 };

@@ -32,18 +32,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QPushButton" name="decVolumeButton">
-        <property name="text">
-         <string>Decrease Volume</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="incVolumeButton">
-        <property name="text">
-         <string>Increase Volume</string>
-        </property>
-       </widget>
+       <widget class="Volume_slider" name="volumeSlider" native="true"/>
       </item>
       <item>
        <widget class="Seeker_widget" name="seekerWidget" native="true"/>
@@ -118,6 +107,12 @@
    <class>Seeker_widget</class>
    <extends>QWidget</extends>
    <header>ui/seeker_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Volume_slider</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/volume_slider.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

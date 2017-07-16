@@ -23,6 +23,7 @@ set(SOURCES
     ui/engine_output.cpp
     ui/playlist_widget.cpp
     ui/seeker_widget.cpp
+    ui/widgets/volume_slider.cpp
 )
 
 set(HEADERS
@@ -40,6 +41,7 @@ set(HEADERS
     ui/engine_output.h
     ui/playlist_widget.h
     ui/seeker_widget.h
+    ui/widgets/volume_slider.h
 )
 
 set(EXECUTABLE_OUTPUT_PATH ..)

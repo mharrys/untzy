@@ -29,8 +29,7 @@ Main_window::Main_window(std::unique_ptr<Player> player,
     : QMainWindow(parent),
       ui(new Ui::mainWindow),
       player(std::move(player)),
-      logger(logger),
-      volume(0.0, 1.0, 0.5)
+      logger(logger)
 {
     init();
 }
@@ -61,18 +60,6 @@ void Main_window::pause()
     player->pause();
 }
 
-void Main_window::increase_volume()
-{
-    volume.increase();
-    player->set_volume(volume);
-}
-
-void Main_window::decrease_volume()
-{
-    volume.decrease();
-    player->set_volume(volume);
-}
-
 void Main_window::show_engine_output()
 {
     engine_output.show();
@@ -86,8 +73,6 @@ void Main_window::init()
     connect(ui->exitAction,  &QAction::triggered, this, &Main_window::close);
     connect(ui->playButton,  &QPushButton::clicked, this, &Main_window::play);
     connect(ui->pauseButton, &QPushButton::clicked, this, &Main_window::pause);
-    connect(ui->incVolumeButton, &QPushButton::clicked, this, &Main_window::increase_volume);
-    connect(ui->decVolumeButton, &QPushButton::clicked, this, &Main_window::decrease_volume);
     connect(ui->viewEngineOutputAction, &QAction::triggered, this, &Main_window::show_engine_output);
 
     // present logged messages with a GUI instead of to terminal
@@ -136,12 +121,11 @@ void Main_window::init()
         player->get_engine()->set_seek_position(seek_pos);
     });
 
+    // user changed volume position
+    connect(ui->volumeSlider, &Volume_slider::changed_volume, player.get(), &Player::set_volume);
+
     // update seeker position
     connect(&progress_timer, &QTimer::timeout, this, &Main_window::update_seeker);
-
-    // start at 50%
-    volume.set_level(0.5);
-    player->set_volume(volume);
 }
 
 void Main_window::create_song(const QUrl& url)
