@@ -23,12 +23,12 @@ using ::testing::DoubleNear;
 
 TEST(VolumeTest, StartState)
 {
-    Volume v1;
+    Volume v1(1.0);
     CMP_DBL(v1.get_level(), 1.0);
     CMP_DBL(v1.get_minimum(), 0.0);
     CMP_DBL(v1.get_maximum(), 1.0);
 
-    Volume v2(-10.0, 100.0);
+    Volume v2(100.0, -10.0, 100.0);
     CMP_DBL(v2.get_level(), 100.0);
     CMP_DBL(v2.get_minimum(), -10.0);
     CMP_DBL(v2.get_maximum(), 100.0);
@@ -37,72 +37,15 @@ TEST(VolumeTest, StartState)
 TEST(VolumeTest, IncorrectMinMax)
 {
     // min may not be greater than max
-    ASSERT_THROW(Volume(1.0, 0.0), std::invalid_argument);
+    ASSERT_THROW(Volume(1.0, 1.0, 0.0), std::invalid_argument);
     // equal is ok
-    ASSERT_NO_THROW({Volume(1.0, 1.0);});
+    ASSERT_NO_THROW({Volume(1.0, 1.0, 1.0);});
 }
 
-TEST(VolumeTest, IncrementDecrement)
+TEST(VolumeTest, IncorrectLevel)
 {
-    Volume v1;
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.8);
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.6);
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.4);
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.2);
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.0);
-    // locked to minimum
-    v1.decrease();
-    CMP_DBL(v1.get_level(), 0.0);
-    v1.increase();
-    CMP_DBL(v1.get_level(), 0.2);
-    v1.increase();
-    CMP_DBL(v1.get_level(), 0.4);
-    v1.increase();
-    CMP_DBL(v1.get_level(), 0.6);
-    v1.increase();
-    CMP_DBL(v1.get_level(), 0.8);
-    v1.increase();
-    CMP_DBL(v1.get_level(), 1.0);
-    // locked to maximum
-    v1.increase();
-    CMP_DBL(v1.get_level(), 1.0);
-
-    // different sizes
-    Volume v2(-1.0, 2.0, 1.0);
-    CMP_DBL(v2.get_level(), 2.0);
-    v2.decrease();
-    CMP_DBL(v2.get_level(), 1.0);
-    v2.decrease();
-    CMP_DBL(v2.get_level(), 0.0);
-    v2.decrease();
-    CMP_DBL(v2.get_level(), -1.0);
-    // locked to minimum
-    v2.decrease();
-    CMP_DBL(v2.get_level(), -1.0);
-    v2.increase();
-    CMP_DBL(v2.get_level(), 0.0);
-    v2.increase();
-    CMP_DBL(v2.get_level(), 1.0);
-    v2.increase();
-    CMP_DBL(v2.get_level(), 2.0);
-    // locked to maximum
-    v2.increase();
-    CMP_DBL(v2.get_level(), 2.0);
-}
-
-TEST(VolumeTest, SetLevel)
-{
-    Volume v1;
-    CMP_DBL(v1.get_level(), 1.0);
-    v1.set_level(0.5);
-    CMP_DBL(v1.get_level(), 0.5);
-    v1.set_level(100.0);
-    CMP_DBL(v1.get_level(), 1.0);
-    v1.set_level(-100.0);
-    CMP_DBL(v1.get_level(), 0.0);
+    // level may not be lower than minimum
+    ASSERT_THROW(Volume(0.0, 0.1, 1.0), std::invalid_argument);
+    // level may not be higher than maximum
+    ASSERT_THROW(Volume(1.0, 0.0, 0.9), std::invalid_argument);
 }

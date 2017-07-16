@@ -13,35 +13,29 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "volume.h"
+#include "volume_slider.h"
 
-#include <algorithm>
-#include <stdexcept>
-
-Volume::Volume(double level, double minimum, double maximum)
-    : level(level),
-      minimum(minimum),
-      maximum(maximum)
+Volume_slider::Volume_slider(QWidget* parent)
+    : QSlider(parent),
+      volume(0.5)
 {
-    if (minimum > maximum)
-        throw std::invalid_argument("minimum > maximum");
-    if (level < minimum)
-        throw std::invalid_argument("level < minimum");
-    if (level > maximum)
-        throw std::invalid_argument("level > minimum");
+    init();
 }
 
-double Volume::get_level() const
+void Volume_slider::init()
 {
-    return level;
+    setMinimum(0);
+    setMaximum(100);
+    setOrientation(Qt::Horizontal);
+    setMinimumWidth(100);
+    setMaximumWidth(100);
+    connect(this, &QSlider::valueChanged, this, &Volume_slider::value_changed);
+    setValue(volume.get_level() * maximum());
 }
 
-double Volume::get_minimum() const
+void Volume_slider::value_changed(int value)
 {
-    return minimum;
-}
-
-double Volume::get_maximum() const
-{
-    return maximum;
+    auto real_value = static_cast<double>(value);
+    auto level = real_value / maximum();
+    emit changed_volume(Volume(level));
 }

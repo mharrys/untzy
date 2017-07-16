@@ -16,25 +16,17 @@
 #ifndef VOLUME_H_INCLUDED
 #define VOLUME_H_INCLUDED
 
-// Describes the audio volume.
+// Describes the audio volume level.
 class Volume {
 public:
-    // Create a new volume with current level set to max.
-    Volume(double minimum = 0.0, double maximum = 1.0, double step = 0.2);
-
-    // Increase volume level with one step.
-    void increase();
-    // Decrease volume level with one step.
-    void decrease();
-    // Set volume level to specified value. The level value is clamped within
-    // minimum and maximum allowed value.
-    void set_level(double level);
+    // Create a new volume level.
+    Volume(double level, double minimum = 0.0, double maximum = 1.0);
 
     double get_level() const;
     double get_minimum() const;
     double get_maximum() const;
 private:
-    double minimum, maximum, step, level;
+    double minimum, maximum, level;
 };
 
 #endif
