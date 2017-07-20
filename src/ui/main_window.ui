@@ -35,7 +35,7 @@
        <widget class="Volume_slider" name="volumeSlider" native="true"/>
       </item>
       <item>
-       <widget class="Seeker_widget" name="seekerWidget" native="true"/>
+       <widget class="Seeker" name="seeker" native="true"/>
       </item>
      </layout>
     </item>
@@ -104,15 +104,15 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>Seeker_widget</class>
-   <extends>QWidget</extends>
-   <header>ui/seeker_widget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>Volume_slider</class>
    <extends>QWidget</extends>
    <header>ui/widgets/volume_slider.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Seeker</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/seeker.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

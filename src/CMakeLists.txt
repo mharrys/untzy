@@ -6,7 +6,6 @@ qt5_wrap_ui(UI
     ui/main_window.ui
     ui/engine_output.ui
     ui/playlist_widget.ui
-    ui/seeker_widget.ui
 )
 
 set(SOURCES
@@ -22,7 +21,7 @@ set(SOURCES
     ui/main_window.cpp
     ui/engine_output.cpp
     ui/playlist_widget.cpp
-    ui/seeker_widget.cpp
+    ui/widgets/seeker.cpp
     ui/widgets/volume_slider.cpp
 )
 
@@ -40,7 +39,7 @@ set(HEADERS
     ui/main_window.h
     ui/engine_output.h
     ui/playlist_widget.h
-    ui/seeker_widget.h
+    ui/widgets/seeker.h
     ui/widgets/volume_slider.h
 )
 

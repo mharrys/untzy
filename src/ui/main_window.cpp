@@ -88,7 +88,7 @@ void Main_window::init()
     connect(player.get(), &Player::playing, [=](const Song& song) {
         setWindowTitle(song.get_source().fileName());
         // seek bar must match the number of seconds of song
-        ui->seekerWidget->set_length(song.get_duration().get_length());
+        ui->seeker->set_length(song.get_duration().get_length());
         // query song progress every second
         progress_timer.start(1000);
         // refresh seeker in case of new song
@@ -117,7 +117,7 @@ void Main_window::init()
     });
 
     // user changed seeker position
-    connect(ui->seekerWidget, &Seeker_widget::changed_position, [=](long seek_pos) {
+    connect(ui->seeker, &Seeker::changed_position, [=](long seek_pos) {
         player->get_engine()->set_seek_position(seek_pos);
     });
 
@@ -143,5 +143,5 @@ void Main_window::create_song(const QUrl& url)
 void Main_window::update_seeker()
 {
     auto seek_pos = player->get_engine()->get_seek_position();
-    ui->seekerWidget->set_position(seek_pos);
+    ui->seeker->set_position(seek_pos);
 }

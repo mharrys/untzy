@@ -13,21 +13,16 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef SEEKER_WIDGET_H_INCLUDED
-#define SEEKER_WIDGET_H_INCLUDED
+#ifndef SEEKER_H_INCLUDED
+#define SEEKER_H_INCLUDED
 
-#include <QWidget>
+#include <QSlider>
 
-namespace Ui {
-class seekerWidget;
-}
-
-class Seeker_widget : public QWidget
+class Seeker : public QSlider
 {
     Q_OBJECT
 public:
-    explicit Seeker_widget(QWidget* parent = 0);
-    ~Seeker_widget();
+    explicit Seeker(QWidget* parent = 0);
 public slots:
     // Set position in seconds unless user is currently dragging in seeker.
     void set_position(long position);
@@ -38,8 +33,9 @@ signals:
     void changed_position(long seek_pos);
 private:
     void init();
+    void slider_pressed();
+    void slider_released();
 
-    Ui::seekerWidget* ui;
     bool dragging;
 };
 
