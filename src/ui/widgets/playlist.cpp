@@ -32,8 +32,8 @@ void Playlist::init()
 {
     setAcceptDrops(true);
     setShowGrid(false);
+    setSelectionBehavior(QAbstractItemView::SelectRows);
     horizontalHeader()->setStretchLastSection(true);
-    horizontalHeader()->setSelectionBehavior(QAbstractItemView::SelectRows);
     verticalHeader()->setVisible(false);
     setModel(&playlist_model);
     connect(this, &QTableView::doubleClicked, [=](const QModelIndex& index) {
