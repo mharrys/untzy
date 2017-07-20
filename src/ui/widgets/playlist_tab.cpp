@@ -32,22 +32,19 @@ Playlist_tab::Playlist_tab(QWidget* parent)
 
 void Playlist_tab::mouseReleaseEvent(QMouseEvent* event)
 {
-    if (event->button() == Qt::RightButton) {
+    if (event->button() == Qt::RightButton || event->button() == Qt::MiddleButton) {
         event->accept();
 
         auto click_pos = event->localPos().toPoint();
         auto tab_bar = tabBar();
-
         auto inside_tab_bar = tab_bar->rect().contains(click_pos);
         if (inside_tab_bar) {
-            // determine which tab index received right click and show menu
-            for (auto i = 0; i < tab_bar->count(); i++) {
-                if (tab_bar->tabRect(i).contains(click_pos)) {
-                    selected_tab_index = i;
-                    playlist_menu.popup(event->globalPos());
-                    break;
-                }
-            }
+            auto index = clicked_tab_index(click_pos);
+            if (event->button() == Qt::RightButton) {
+                selected_tab_index = index;
+                playlist_menu.popup(event->globalPos());
+            } else if (event->button() == Qt::MiddleButton)
+                removeTab(index);
         } else
             bar_menu.popup(event->globalPos());
     }
@@ -114,4 +111,15 @@ void Playlist_tab::init()
     connect(delete_action, &QAction::triggered, [=]() {
         removeTab(selected_tab_index);
     });
+}
+
+int Playlist_tab::clicked_tab_index(const QPoint& click_pos)
+{
+    auto tab_bar = tabBar();
+    for (auto i = 0; i < tab_bar->count(); i++) {
+        if (tab_bar->tabRect(i).contains(click_pos)) {
+            return i;
+        }
+    }
+    return -1;
 }

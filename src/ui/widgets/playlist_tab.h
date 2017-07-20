@@ -42,6 +42,7 @@ signals:
     void drop_file(const QUrl& url);
 private:
     void init();
+    int clicked_tab_index(const QPoint& click_pos);
 
     QMenu playlist_menu, bar_menu;
     int selected_tab_index;
