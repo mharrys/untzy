@@ -40,7 +40,7 @@
      </layout>
     </item>
     <item>
-     <widget class="Playlist_widget" name="playlistWidget" native="true"/>
+     <widget class="Playlist_tab" name="playlistTab" native="true"/>
     </item>
    </layout>
   </widget>
@@ -98,12 +98,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>Playlist_widget</class>
-   <extends>QWidget</extends>
-   <header>ui/playlist_widget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>Volume_slider</class>
    <extends>QWidget</extends>
    <header>ui/widgets/volume_slider.h</header>
@@ -113,6 +107,12 @@
    <class>Seeker</class>
    <extends>QWidget</extends>
    <header>ui/widgets/seeker.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>Playlist_tab</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/playlist_tab.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -100,19 +100,19 @@ void Main_window::init()
 
     // user opened new song through file browser
     connect(this, &Main_window::song_created, [=](const Song& song) {
-        ui->playlistWidget->append_song(song);
+        ui->playlistTab->append_song(song);
         player->load(song);
         player->play();
     });
 
     // user double clicks on song in playlist
-    connect(ui->playlistWidget, &Playlist_widget::select_song, [=](const Song& song) {
+    connect(ui->playlistTab, &Playlist_tab::select_song, [=](const Song& song) {
         player->load(song);
         player->play();
     });
 
     // user drops a file in playlist
-    connect(ui->playlistWidget, &Playlist_widget::drop_file, [=](const QUrl& url) {
+    connect(ui->playlistTab, &Playlist_tab::drop_file, [=](const QUrl& url) {
         create_song(url);
     });
 
