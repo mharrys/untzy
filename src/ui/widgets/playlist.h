@@ -20,15 +20,19 @@
 
 #include <QTableView>
 
+// The responsibility of this class is to view a list of songs.
 class Playlist : public QTableView
 {
     Q_OBJECT
 public:
     explicit Playlist(QWidget* parent = 0);
 public slots:
+    // Append song to playlist.
     void append_song(const Song& song);
 signals:
+    // Emitted when a user double clicks a song in the playlist.
     void select_song(const Song& song);
+    // Emitted when a user drops a file(s) into the playlist.
     void drop_file(const QUrl& url);
 private:
     void init();
