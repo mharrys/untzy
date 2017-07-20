@@ -5,7 +5,6 @@ qt5_add_resources(RESOURCES
 qt5_wrap_ui(UI
     ui/main_window.ui
     ui/engine_output.ui
-    ui/playlist_widget.ui
 )
 
 set(SOURCES
@@ -20,7 +19,7 @@ set(SOURCES
     playlist/playlist_model.cpp
     ui/main_window.cpp
     ui/engine_output.cpp
-    ui/playlist_widget.cpp
+    ui/widgets/playlist.cpp
     ui/widgets/playlist_tab.cpp
     ui/widgets/volume_slider.cpp
     ui/widgets/seeker.cpp
@@ -39,7 +38,7 @@ set(HEADERS
     playlist/playlist_model.h
     ui/main_window.h
     ui/engine_output.h
-    ui/playlist_widget.h
+    ui/widgets/playlist.h
     ui/widgets/playlist_tab.h
     ui/widgets/volume_slider.h
     ui/widgets/seeker.h

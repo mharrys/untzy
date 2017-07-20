@@ -15,7 +15,7 @@
 
 #include "playlist_tab.h"
 
-#include "../playlist_widget.h"
+#include "playlist.h"
 
 #include <QTabBar>
 #include <QMouseEvent>
@@ -55,17 +55,17 @@ void Playlist_tab::mouseReleaseEvent(QMouseEvent* event)
 
 void Playlist_tab::append_song(const Song& song)
 {
-    auto playlist = dynamic_cast<Playlist_widget*>(widget(currentIndex()));
+    auto playlist = dynamic_cast<Playlist*>(widget(currentIndex()));
     playlist->append_song(song);
 }
 
 void Playlist_tab::append_playlist(const QString& name)
 {
-    auto playlist = new Playlist_widget();
-    connect(playlist, &Playlist_widget::select_song, [=](const Song& song) {
+    auto playlist = new Playlist();
+    connect(playlist, &Playlist::select_song, [=](const Song& song) {
         emit select_song(song);
     });
-    connect(playlist, &Playlist_widget::drop_file, [=](const QUrl& url) {
+    connect(playlist, &Playlist::drop_file, [=](const QUrl& url) {
         emit drop_file(url);
     });
     addTab(playlist, name);

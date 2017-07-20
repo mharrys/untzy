@@ -13,23 +13,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLAYLIST_WIDGET_H_INCLUDED
-#define PLAYLIST_WIDGET_H_INCLUDED
+#ifndef PLAYLIST_H_INCLUDED
+#define PLAYLIST_H_INCLUDED
 
 #include "playlist/playlist_model.h"
 
-#include <QWidget>
+#include <QTableView>
 
-namespace Ui {
-class playlistWidget;
-}
-
-class Playlist_widget : public QWidget
+class Playlist : public QTableView
 {
     Q_OBJECT
 public:
-    explicit Playlist_widget(QWidget* parent = 0);
-    ~Playlist_widget();
+    explicit Playlist(QWidget* parent = 0);
 public slots:
     void append_song(const Song& song);
 signals:
@@ -38,7 +33,6 @@ signals:
 private:
     void init();
 
-    Ui::playlistWidget* ui;
     Playlist_model playlist_model;
 };
 

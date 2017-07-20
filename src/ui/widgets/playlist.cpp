@@ -13,31 +13,30 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#include "playlist_widget.h"
-#include "ui_playlist_widget.h"
+#include "playlist.h"
 
-Playlist_widget::Playlist_widget(QWidget* parent)
-    : QWidget(parent),
-      ui(new Ui::playlistWidget)
+#include <QHeaderView>
+
+Playlist::Playlist(QWidget* parent)
+    : QTableView(parent)
 {
     init();
 }
 
-Playlist_widget::~Playlist_widget()
-{
-    delete ui;
-}
-
-void Playlist_widget::append_song(const Song& song)
+void Playlist::append_song(const Song& song)
 {
     playlist_model.append_song(song);
 }
 
-void Playlist_widget::init()
+void Playlist::init()
 {
-    ui->setupUi(this);
-    ui->tableView->setModel(&playlist_model);
-    connect(ui->tableView, &QTableView::doubleClicked, [=](const QModelIndex& index) {
+    setAcceptDrops(true);
+    setShowGrid(false);
+    horizontalHeader()->setStretchLastSection(true);
+    horizontalHeader()->setSelectionBehavior(QAbstractItemView::SelectRows);
+    verticalHeader()->setVisible(false);
+    setModel(&playlist_model);
+    connect(this, &QTableView::doubleClicked, [=](const QModelIndex& index) {
         auto song = playlist_model.get_song(index);
         emit select_song(song);
     });
