@@ -19,6 +19,7 @@
 #include "song.h"
 
 #include <QObject>
+#include <QTimer>
 
 #include <memory>
 
@@ -43,9 +44,12 @@ signals:
     void playing(const Song& song);
     void paused();
     void volume_changed(const Volume& volume);
+    // Emitted in 2 Hz when a song is played (will not stop on pause).
+    void progress(const Song& song);
 private:
     std::unique_ptr<Engine> engine;
     Song current_song;
+    QTimer progress_timer;
 };
 
 #endif

@@ -41,12 +41,23 @@ Song Song::make(const QUrl& source)
     }
 
     Duration duration;
+    int bitrate, sample_rate, channels;
     if (file_ref.audioProperties()) {
         TagLib::AudioProperties* properties = file_ref.audioProperties();
         duration = Duration(properties->length());
+        bitrate = properties->bitrate();
+        sample_rate = properties->sampleRate();
+        channels = properties->channels();
     }
 
-    return Song(source, title, artist, duration);
+    return Song(
+        source,
+        title,
+        artist,
+        duration,
+        bitrate,
+        sample_rate,
+        channels);
 }
 
 Song::Song()
@@ -56,11 +67,17 @@ Song::Song()
 Song::Song(const QUrl& source,
            const QString& title,
            const QString& artist,
-           const Duration& duration)
+           const Duration& duration,
+           int bitrate,
+           int sample_rate,
+           int channels)
     : source(source),
       title(title),
       artist(artist),
-      duration(duration)
+      duration(duration),
+      bitrate(bitrate),
+      sample_rate(sample_rate),
+      channels(channels)
 {
 }
 
@@ -82,4 +99,19 @@ QString Song::get_artist() const
 Duration Song::get_duration() const
 {
     return duration;
+}
+
+int Song::get_bitrate() const
+{
+    return bitrate;
+}
+
+int Song::get_sample_rate() const
+{
+    return sample_rate;
+}
+
+int Song::get_channels() const
+{
+    return channels;
 }

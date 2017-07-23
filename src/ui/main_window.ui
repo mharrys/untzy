@@ -69,6 +69,7 @@
    <addaction name="menuFile"/>
    <addaction name="menuWindow"/>
   </widget>
+  <widget class="QStatusBar" name="statusBar"/>
   <action name="openFileAction">
    <property name="text">
     <string>&amp;Open...</string>

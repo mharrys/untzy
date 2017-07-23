@@ -24,6 +24,10 @@ Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
     : engine(std::move(engine)),
       QObject(parent)
 {
+    // update seeker position
+    connect(&progress_timer, &QTimer::timeout, [=]() {
+        emit progress(current_song);
+    });
 }
 
 void Player::load(const Song& song)
@@ -36,6 +40,10 @@ void Player::play()
 {
     engine->play();
     emit playing(current_song);
+    // start ticking at 2 Hz
+    progress_timer.start(500);
+    // one tick immediately
+    emit progress(current_song);
 }
 
 void Player::pause()

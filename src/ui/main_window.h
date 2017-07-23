@@ -20,7 +20,6 @@
 
 #include <QFileDialog>
 #include <QMainWindow>
-#include <QTimer>
 
 #include <memory>
 
@@ -51,12 +50,13 @@ private:
     void init();
     void create_song(const QUrl& url);
     void update_seeker();
+    void update_status_bar(const Song& song);
 
     Ui::mainWindow* ui;
     std::unique_ptr<Player> player;
     std::shared_ptr<Logger> logger;
     Engine_output engine_output;
-    QTimer progress_timer;
+
 };
 
 #endif

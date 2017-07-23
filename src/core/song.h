@@ -36,7 +36,10 @@ public:
     explicit Song(const QUrl& source,
                   const QString& title,
                   const QString& artist,
-                  const Duration& duration);
+                  const Duration& duration,
+                  int bitrate,
+                  int sample_rate,
+                  int channels);
 
     // Return source to song. This could be a file path or a URL to a stream.
     QUrl get_source() const;
@@ -49,10 +52,21 @@ public:
 
     // Return song duration.
     Duration get_duration() const;
+
+    // Return in kb/s constant bitrate for a file or average or nominal
+    // bitrate for variable bitrate.
+    int get_bitrate() const;
+
+    // Return sample rate in Hz.
+    int get_sample_rate() const;
+
+    // Return the number of audio channels.
+    int get_channels() const;
 private:
     QUrl source;
     QString title, artist;
     Duration duration;
+    int bitrate, sample_rate, channels;
 };
 
 #endif

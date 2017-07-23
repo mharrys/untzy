@@ -89,10 +89,6 @@ void Main_window::init()
         setWindowTitle(song.get_source().fileName());
         // seek bar must match the number of seconds of song
         ui->seeker->set_length(song.get_duration().get_length());
-        // query song progress every second
-        progress_timer.start(1000);
-        // refresh seeker in case of new song
-        update_seeker();
     });
 
     // view all messages produced by the audio engine
@@ -124,8 +120,11 @@ void Main_window::init()
     // user changed volume position
     connect(ui->volumeSlider, &Volume_slider::changed_volume, player.get(), &Player::set_volume);
 
-    // update seeker position
-    connect(&progress_timer, &QTimer::timeout, this, &Main_window::update_seeker);
+    // update song progress
+    connect(player.get(), &Player::progress, [=](const Song& song) {
+        update_seeker();
+        update_status_bar(song);
+    });
 }
 
 void Main_window::create_song(const QUrl& url)
@@ -144,4 +143,16 @@ void Main_window::update_seeker()
 {
     auto seek_pos = player->get_engine()->get_seek_position();
     ui->seeker->set_position(seek_pos);
+}
+
+void Main_window::update_status_bar(const Song& song)
+{
+    auto seek_pos = Duration(player->get_engine()->get_seek_position());
+    auto msg = tr("%1 kbps | %2 Hz | %3 | %4 / %5").arg(
+        QString::number(song.get_bitrate()),
+        QString::number(song.get_sample_rate()),
+        song.get_channels() > 1 ? "stereo" : "mono",
+        seek_pos.get_str(),
+        song.get_duration().get_str());
+    statusBar()->showMessage(msg);
 }
