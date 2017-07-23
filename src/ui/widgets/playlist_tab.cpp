@@ -66,6 +66,8 @@ void Playlist_tab::append_playlist(const QString& name)
         emit drop_file(url);
     });
     addTab(playlist, name);
+    // switch to added playlist
+    setCurrentIndex(count() - 1);
 }
 
 void Playlist_tab::init()
