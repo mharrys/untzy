@@ -20,10 +20,20 @@
 
 #include <QAbstractListModel>
 
+// The responsibility of this class is to store a list of songs.
 class Playlist_model : public QAbstractListModel {
     Q_OBJECT
 public:
-    explicit Playlist_model(QObject* parent = nullptr);
+    // Row header column tags.
+    enum Header_tag {
+        filename = 0,
+        title,
+        artist,
+        duration,
+        header_tag_count
+    };
+
+    explicit Playlist_model(QObject* parent = 0);
 
     // Append song to end of playlist
     void append_song(const Song& song);

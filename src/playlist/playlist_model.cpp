@@ -40,10 +40,14 @@ QVariant Playlist_model::data(const QModelIndex& index, int role) const
     if (role == Qt::DisplayRole) {
         const Song* song = &songs.at(index.row());
         switch (index.column()) {
-            case 0: return song->get_source().fileName();
-            case 1: return song->get_title();
-            case 2: return song->get_artist();
-            case 3: return song->get_duration().get_str();
+            case filename:
+                return song->get_source().fileName();
+            case title:
+                return song->get_title();
+            case artist:
+                return song->get_artist();
+            case duration:
+                return song->get_duration().get_str();
         }
     }
     return QVariant();
@@ -54,10 +58,14 @@ QVariant Playlist_model::headerData(int section, Qt::Orientation orientation, in
     // map name to each column
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch (section) {
-            case 0: return tr("Filename");
-            case 1: return tr("Title");
-            case 2: return tr("Artist");
-            case 3: return tr("Duration");
+            case filename:
+                return tr("Filename");
+            case title:
+                return tr("Title");
+            case artist:
+                return tr("Artist");
+            case duration:
+                return tr("Duration");
         }
     }
     return QAbstractListModel::headerData(section, orientation, role);
@@ -75,7 +83,7 @@ int Playlist_model::rowCount(const QModelIndex&) const
 
 int Playlist_model::columnCount(const QModelIndex&) const
 {
-    return 4;
+    return header_tag_count;
 }
 
 Qt::ItemFlags Playlist_model::flags(const QModelIndex& index) const
