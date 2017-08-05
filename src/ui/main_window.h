@@ -23,6 +23,7 @@
 
 #include <memory>
 
+class Database;
 class Logger;
 class Player;
 class Song;
@@ -35,7 +36,8 @@ class Main_window : public QMainWindow
 {
     Q_OBJECT
 public:
-    explicit Main_window(std::unique_ptr<Player> player,
+    explicit Main_window(std::unique_ptr<Database> db,
+                         std::unique_ptr<Player> player,
                          std::shared_ptr<Logger> logger,
                          QWidget* parent = nullptr);
     ~Main_window();
@@ -53,10 +55,10 @@ private:
     void update_status_bar(const Song& song);
 
     Ui::mainWindow* ui;
+    std::unique_ptr<Database> db;
     std::unique_ptr<Player> player;
     std::shared_ptr<Logger> logger;
     Engine_output engine_output;
-
 };
 
 #endif

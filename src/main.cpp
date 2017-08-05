@@ -15,6 +15,7 @@
 
 #include "core/logger.h"
 #include "core/player.h"
+#include "db/database.h"
 #include "engines/gstreamer_engine.h"
 #include "ui/main_window.h"
 
@@ -24,6 +25,15 @@
 int main(int argc, char* argv[])
 {
     QApplication app(argc, argv);
+
+    std::unique_ptr<Database> db;
+    try {
+        db = Database::make();
+    } catch (std::runtime_error& e) {
+        auto msg = QObject::tr("Unable to initialize database. Reason: %1").arg(e.what());
+        QMessageBox::critical(NULL, "Untzy", msg);
+        return 1;
+    }
 
     std::unique_ptr<Engine> engine;
     try {
@@ -35,9 +45,8 @@ int main(int argc, char* argv[])
     }
 
     auto player = std::make_unique<Player>(std::move(engine));
-
     auto logger = std::make_shared<Logger>();
-    Main_window main_window(std::move(player), logger);
+    Main_window main_window(std::move(db), std::move(player), logger);
     main_window.show();
 
     return app.exec();

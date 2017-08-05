@@ -19,15 +19,18 @@
 #include "core/logger.h"
 #include "core/player.h"
 #include "core/song.h"
+#include "db/database.h"
 
 #include <QMessageBox>
 #include <QStandardPaths>
 
-Main_window::Main_window(std::unique_ptr<Player> player,
+Main_window::Main_window(std::unique_ptr<Database> db,
+                         std::unique_ptr<Player> player,
                          std::shared_ptr<Logger> logger,
                          QWidget* parent)
     : QMainWindow(parent),
       ui(new Ui::mainWindow),
+      db(std::move(db)),
       player(std::move(player)),
       logger(logger)
 {
@@ -68,6 +71,9 @@ void Main_window::show_engine_output()
 void Main_window::init()
 {
     ui->setupUi(this);
+
+    // the only point where database interaction should happen from now on
+    ui->playlistTab->sync_with_database(std::move(db));
 
     connect(ui->openFileAction,  &QAction::triggered, this, &Main_window::open_song);
     connect(ui->exitAction,  &QAction::triggered, this, &Main_window::close);

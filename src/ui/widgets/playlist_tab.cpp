@@ -15,7 +15,7 @@
 
 #include "playlist_tab.h"
 
-#include "playlist.h"
+#include "ui/widgets/playlist.h"
 
 #include <QTabBar>
 #include <QMouseEvent>
@@ -28,6 +28,23 @@ Playlist_tab::Playlist_tab(QWidget* parent)
       selected_tab_index(-1)
 {
     init();
+}
+
+void Playlist_tab::sync_with_database(std::unique_ptr<Database> db)
+{
+    this->db = std::move(db);
+
+    auto playlists = db->select_playlists();
+    if (playlists.isEmpty())
+        append_playlist(tr("Default"));
+    else {
+        // add without inserting into database
+        for (auto playlist_row : playlists) {
+            append_playlist(playlist_row);
+            for (auto song_row : db->select_songs(playlist_row.get_id()))
+                append_song(song_row);
+        }
+    }
 }
 
 void Playlist_tab::mouseReleaseEvent(QMouseEvent* event)
@@ -52,28 +69,19 @@ void Playlist_tab::mouseReleaseEvent(QMouseEvent* event)
 
 void Playlist_tab::append_song(const Song& song)
 {
-    auto playlist = dynamic_cast<Playlist*>(widget(currentIndex()));
-    playlist->append_song(song);
+    auto playlist = current_playlist();
+    auto song_row = db->insert_song(song, playlist->get_playlist_id());
+    append_song(song_row);
 }
 
 void Playlist_tab::append_playlist(const QString& name)
 {
-    auto playlist = new Playlist();
-    connect(playlist, &Playlist::select_song, [=](const Song& song) {
-        emit select_song(song);
-    });
-    connect(playlist, &Playlist::drop_file, [=](const QUrl& url) {
-        emit drop_file(url);
-    });
-    addTab(playlist, name);
-    // switch to added playlist
-    setCurrentIndex(count() - 1);
+    append_playlist(db->insert_playlist(name));
 }
 
 void Playlist_tab::init()
 {
     tabBar()->setMovable(true);
-    append_playlist(tr("Default"));
 
     auto add_new_action = new QAction(tr("Add new playlist"), this);
     playlist_menu.addAction(add_new_action);
@@ -104,13 +112,18 @@ void Playlist_tab::init()
             QLineEdit::Normal,
             tab_name,
             &ok);
-        if (ok && !playlist_name.isEmpty())
+        if (ok && !playlist_name.isEmpty()) {
+            auto playlist = playlist_from_index(tab_index);
+            db->update_playlist(playlist->get_playlist_id(), playlist_name);
             setTabText(tab_index, playlist_name);
+        }
     });
 
     auto delete_action = new QAction(tr("Delete playlist"), this);
     playlist_menu.addAction(delete_action);
     connect(delete_action, &QAction::triggered, [=]() {
+        auto playlist = playlist_from_index(selected_tab_index);
+        db->delete_playlist(playlist->get_playlist_id());
         removeTab(selected_tab_index);
     });
 }
@@ -124,4 +137,33 @@ int Playlist_tab::clicked_tab_index(const QPoint& click_pos)
         }
     }
     return -1;
+}
+
+Playlist* Playlist_tab::current_playlist()
+{
+    return playlist_from_index(currentIndex());
+}
+
+Playlist* Playlist_tab::playlist_from_index(int index)
+{
+    return dynamic_cast<Playlist*>(widget(index));
+}
+
+void Playlist_tab::append_song(const Song_row& song_row)
+{
+    current_playlist()->append_song(song_row);
+}
+
+void Playlist_tab::append_playlist(const Playlist_row& playlist_row)
+{
+    auto playlist = new Playlist(playlist_row.get_id());
+    connect(playlist, &Playlist::select_song, [=](const Song_row& row) {
+        emit select_song(row.get_song());
+    });
+    connect(playlist, &Playlist::drop_file, [=](const QUrl& url) {
+        emit drop_file(url);
+    });
+    addTab(playlist, playlist_row.get_name());
+    // switch to added playlist
+    setCurrentIndex(count() - 1);
 }

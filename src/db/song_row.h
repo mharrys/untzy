@@ -13,34 +13,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Untzy.  If not, see <http://www.gnu.org/licenses/>.
 
-#ifndef PLAYLIST_H_INCLUDED
-#define PLAYLIST_H_INCLUDED
+#ifndef SONG_ROW_H_INCLUDED
+#define SONG_ROW_H_INCLUDED
 
-#include "playlist/playlist_model.h"
+#include "core/song.h"
 
-#include <QTableView>
-
-// The responsibility of this class is to view a list of songs.
-class Playlist : public QTableView
-{
-    Q_OBJECT
+// The responsibility of this class is to associate database keys with song
+// instance.
+class Song_row {
 public:
-    explicit Playlist(long playlist_id, QWidget* parent = 0);
-
+    explicit Song_row(long song_id, long playlist_id, const Song& song);
+public:
+    long get_song_id() const;
     long get_playlist_id() const;
-public slots:
-    // Append song to playlist.
-    void append_song(const Song_row& row);
-signals:
-    // Emitted when a user double clicks a song in the playlist.
-    void select_song(const Song_row& row);
-    // Emitted when a user drops a file(s) into the playlist.
-    void drop_file(const QUrl& url);
+    Song get_song() const;
 private:
-    void init();
-
+    long song_id;
     long playlist_id;
-    Playlist_model playlist_model;
+    Song song;
 };
 
 #endif

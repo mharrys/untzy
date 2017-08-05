@@ -22,32 +22,20 @@ Playlist_model::Playlist_model(QObject* parent)
 {
 }
 
-void Playlist_model::append_song(const Song& song)
-{
-    beginInsertRows(QModelIndex(), rowCount(), rowCount());
-    songs << song;
-    endInsertRows();
-}
-
-Song Playlist_model::get_song(const QModelIndex& index) const
-{
-    return songs.at(index.row());
-}
-
 QVariant Playlist_model::data(const QModelIndex& index, int role) const
 {
     // map data to each column
     if (role == Qt::DisplayRole) {
-        const Song* song = &songs.at(index.row());
+        auto song = rows.at(index.row()).get_song();
         switch (index.column()) {
             case filename:
-                return song->get_source().fileName();
+                return song.get_source().fileName();
             case title:
-                return song->get_title();
+                return song.get_title();
             case artist:
-                return song->get_artist();
+                return song.get_artist();
             case duration:
-                return song->get_duration().get_str();
+                return song.get_duration().get_str();
         }
     }
     return QVariant();
@@ -78,7 +66,7 @@ QModelIndex Playlist_model::index(int row, int column, const QModelIndex& parent
 
 int Playlist_model::rowCount(const QModelIndex&) const
 {
-    return songs.count();
+    return rows.count();
 }
 
 int Playlist_model::columnCount(const QModelIndex&) const
@@ -103,4 +91,16 @@ bool Playlist_model::dropMimeData(const QMimeData* data, Qt::DropAction action, 
     for (auto url : urls)
         emit drop_file(url);
     return true;
+}
+
+void Playlist_model::append_song(const Song_row& row)
+{
+    beginInsertRows(QModelIndex(), rowCount(), rowCount());
+    rows << row;
+    endInsertRows();
+}
+
+Song_row Playlist_model::get_song(const QModelIndex& index) const
+{
+    return rows.at(index.row());
 }

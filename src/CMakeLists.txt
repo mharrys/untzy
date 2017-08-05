@@ -8,11 +8,14 @@ qt5_wrap_ui(UI
 )
 
 set(SOURCES
+    core/duration.cpp
     core/logger.cpp
     core/player.cpp
     core/volume.cpp
-    core/duration.cpp
     core/song.cpp
+    db/database.cpp
+    db/playlist_row.cpp
+    db/song_row.cpp
     engines/gstreamer_engine.cpp
     engines/gstreamer_pipeline.cpp
     engines/gstreamer_thread.cpp
@@ -26,11 +29,14 @@ set(SOURCES
 )
 
 set(HEADERS
+    core/duration.h
     core/logger.h
     core/player.h
     core/volume.h
-    core/duration.h
     core/song.h
+    db/database.h
+    db/playlist_row.h
+    db/song_row.h
     engines/engine.h
     engines/gstreamer_engine.h
     engines/gstreamer_pipeline.h
@@ -61,6 +67,7 @@ add_executable(${PROJECT_NAME}
 target_link_libraries(untzy_lib
     ${GSTREAMER_LIBRARIES}
     Qt5::Widgets
+    Qt5::Sql
     tag
 )
 

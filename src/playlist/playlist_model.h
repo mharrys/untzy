@@ -16,7 +16,7 @@
 #ifndef PLAYLIST_MODEL_H_INCLUDED
 #define PLAYLIST_MODEL_H_INCLUDED
 
-#include "core/song.h"
+#include "db/song_row.h"
 
 #include <QAbstractListModel>
 
@@ -35,11 +35,6 @@ public:
 
     explicit Playlist_model(QObject* parent = 0);
 
-    // Append song to end of playlist
-    void append_song(const Song& song);
-    // Return song at specified index.
-    Song get_song(const QModelIndex& index) const;
-
     // List model override
     QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const override;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const override;
@@ -49,10 +44,15 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     bool canDropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) const override;
     bool dropMimeData(const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) override;
+public slots:
+    // Append song to end of playlist
+    void append_song(const Song_row& row);
+    // Return song at specified index.
+    Song_row get_song(const QModelIndex& index) const;
 signals:
     void drop_file(const QUrl& url);
 private:
-    QList<Song> songs;
+    QList<Song_row> rows;
 };
 
 #endif

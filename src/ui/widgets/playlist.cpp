@@ -17,15 +17,21 @@
 
 #include <QHeaderView>
 
-Playlist::Playlist(QWidget* parent)
-    : QTableView(parent)
+Playlist::Playlist(long playlist_id, QWidget* parent)
+    : QTableView(parent),
+      playlist_id(playlist_id)
 {
     init();
 }
 
-void Playlist::append_song(const Song& song)
+long Playlist::get_playlist_id() const
 {
-    playlist_model.append_song(song);
+    return playlist_id;
+}
+
+void Playlist::append_song(const Song_row& row)
+{
+    playlist_model.append_song(row);
 }
 
 void Playlist::init()
@@ -37,8 +43,8 @@ void Playlist::init()
     verticalHeader()->setVisible(false);
     setModel(&playlist_model);
     connect(this, &QTableView::doubleClicked, [=](const QModelIndex& index) {
-        auto song = playlist_model.get_song(index);
-        emit select_song(song);
+        auto row = playlist_model.get_song(index);
+        emit select_song(row);
     });
     connect(&playlist_model, &Playlist_model::drop_file, [=](const QUrl& url) {
         emit drop_file(url);
