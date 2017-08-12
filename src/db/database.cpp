@@ -168,6 +168,15 @@ void Database::update_playlist(long playlist, const QString& name)
         THROW_QUERY_ERR
 }
 
+void Database::delete_song(long song)
+{
+    QSqlQuery query;
+    query.prepare("DELETE FROM songs WHERE id=:id");
+    query.bindValue(":id", QVariant::fromValue(song));
+    if (!query.exec())
+        THROW_QUERY_ERR
+}
+
 void Database::delete_playlist(long playlist)
 {
     QSqlQuery query;

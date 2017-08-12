@@ -45,6 +45,8 @@ public:
     // Update playlist with new name.
     void update_playlist(long playlist, const QString& name);
 
+    // Delete song.
+    void delete_song(long song);
     // Delete playlist (and all songs that belongs to it).
     void delete_playlist(long playlist);
 private:
