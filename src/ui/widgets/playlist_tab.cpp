@@ -160,6 +160,9 @@ void Playlist_tab::append_playlist(const Playlist_row& playlist_row)
     connect(playlist, &Playlist::select_song, [=](const Song_row& row) {
         emit select_song(row.get_song());
     });
+    connect(playlist, &Playlist::remove_song, [=](const Song_row& row) {
+        db->delete_song(row.get_song_id());
+    });
     connect(playlist, &Playlist::drop_file, [=](const QUrl& url) {
         emit drop_file(url);
     });

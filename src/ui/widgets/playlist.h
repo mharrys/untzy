@@ -18,6 +18,7 @@
 
 #include "playlist/playlist_model.h"
 
+#include <QMenu>
 #include <QTableView>
 
 // The responsibility of this class is to view a list of songs.
@@ -28,12 +29,16 @@ public:
     explicit Playlist(long playlist_id, QWidget* parent = 0);
 
     long get_playlist_id() const;
+    // Override for context menu on right button click
+    void mouseReleaseEvent(QMouseEvent* event) final;
 public slots:
     // Append song to playlist.
     void append_song(const Song_row& row);
 signals:
     // Emitted when a user double clicks a song in the playlist.
     void select_song(const Song_row& row);
+    // Emitted when a user selectes remove in context menu.
+    void remove_song(const Song_row& row);
     // Emitted when a user drops a file(s) into the playlist.
     void drop_file(const QUrl& url);
 private:
@@ -41,6 +46,8 @@ private:
 
     long playlist_id;
     Playlist_model playlist_model;
+    QMenu song_menu;
+    Song_row selected_row;
 };
 
 #endif
