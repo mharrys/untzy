@@ -47,6 +47,8 @@ public:
 public slots:
     // Append song to end of playlist
     void append_song(const Song_row& row);
+    // Remove song from playlist.
+    void remove_song(const Song_row& row);
     // Return song at specified index.
     Song_row get_song(const QModelIndex& index) const;
 signals:

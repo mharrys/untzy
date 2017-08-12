@@ -100,6 +100,21 @@ void Playlist_model::append_song(const Song_row& row)
     endInsertRows();
 }
 
+void Playlist_model::remove_song(const Song_row& row)
+{
+    int index = -1;
+    for (auto i = 0; i < rowCount(); i++) {
+        auto current_row = rows.at(i);
+        if (current_row.get_song_id() == row.get_song_id()) {
+            index = i;
+            break;
+        }
+    }
+    beginRemoveRows(QModelIndex(), index, index);
+    rows.removeAt(index);
+    endRemoveRows();
+}
+
 Song_row Playlist_model::get_song(const QModelIndex& index) const
 {
     return rows.at(index.row());
