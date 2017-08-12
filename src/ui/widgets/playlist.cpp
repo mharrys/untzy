@@ -17,12 +17,14 @@
 
 #include <QMouseEvent>
 #include <QHeaderView>
+#include <QItemSelectionModel>
+
+#include <algorithm>
 
 Playlist::Playlist(long playlist_id, QWidget* parent)
     : QTableView(parent),
       playlist_id(playlist_id),
-      song_menu(this),
-      selected_row(0, 0, Song())
+      song_menu(this)
 {
     init();
 }
@@ -41,11 +43,7 @@ void Playlist::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::RightButton) {
         event->accept();
-        auto index = indexAt(event->localPos().toPoint());
-        if (index.isValid()) {
-            selected_row = playlist_model.get_song(index);
-            song_menu.popup(event->globalPos());
-        }
+        remove_songs(event->globalPos());
     }
 }
 
@@ -67,7 +65,27 @@ void Playlist::init()
     auto remove_action = new QAction(tr("Remove"), this);
     song_menu.addAction(remove_action);
     connect(remove_action, &QAction::triggered, [=]() {
-        emit remove_song(selected_row);
-        playlist_model.remove_song(selected_row);
+        for (auto row : selected_rows) {
+            emit remove_song(row);
+            playlist_model.remove_song(row);
+        }
     });
+}
+
+void Playlist::remove_songs(const QPoint& global_pos)
+{
+    auto selection = selectionModel();
+    if (!selection->hasSelection())
+        return;
+
+    auto selected_indices = selection->selectedRows();
+    auto to_song_row = [=](QModelIndex index) {
+        return playlist_model.get_song(index);
+    };
+    selected_rows.clear();
+    std::transform(selected_indices.begin(),
+                   selected_indices.end(),
+                   std::back_inserter(selected_rows),
+                   to_song_row);
+    song_menu.popup(global_pos);
 }

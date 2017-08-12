@@ -18,6 +18,7 @@
 
 #include "playlist/playlist_model.h"
 
+#include <QList>
 #include <QMenu>
 #include <QTableView>
 
@@ -43,11 +44,12 @@ signals:
     void drop_file(const QUrl& url);
 private:
     void init();
+    void remove_songs(const QPoint& global_pos);
 
     long playlist_id;
     Playlist_model playlist_model;
     QMenu song_menu;
-    Song_row selected_row;
+    QList<Song_row> selected_rows;
 };
 
 #endif
