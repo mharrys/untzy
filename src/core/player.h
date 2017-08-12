@@ -48,6 +48,7 @@ signals:
     void progress(const Song& song);
 private:
     std::unique_ptr<Engine> engine;
+    bool song_loaded;
     Song current_song;
     QTimer progress_timer;
 };

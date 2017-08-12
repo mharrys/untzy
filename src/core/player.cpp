@@ -22,6 +22,7 @@
 
 Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
     : engine(std::move(engine)),
+      song_loaded(false),
       QObject(parent)
 {
     // update seeker position
@@ -32,12 +33,16 @@ Player::Player(std::unique_ptr<Engine> engine, QObject* parent)
 
 void Player::load(const Song& song)
 {
+    song_loaded = true;
     current_song = song;
     engine->load(song.get_source());
 }
 
 void Player::play()
 {
+    if (!song_loaded)
+        return;
+
     engine->play();
     emit playing(current_song);
     // start ticking at 2 Hz
@@ -48,6 +53,9 @@ void Player::play()
 
 void Player::pause()
 {
+    if (!song_loaded)
+        return;
+
     engine->pause();
     emit paused();
 }
