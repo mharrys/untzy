@@ -36,7 +36,7 @@ public:
     // Synchronize with specified database i.e. add playlists and songs from
     // database. Unable to dependency inject in constructor.
     void sync_with_database(std::unique_ptr<Database> db);
-    // Override for context menu on right button click
+    // Override for context menu on right button click.
     void mouseReleaseEvent(QMouseEvent* event) final;
 public slots:
     // Append song to current selected playlist.

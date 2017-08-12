@@ -30,7 +30,9 @@ public:
     explicit Playlist(long playlist_id, QWidget* parent = 0);
 
     long get_playlist_id() const;
-    // Override for context menu on right button click
+    // Override for double click on song.
+    void mouseDoubleClickEvent(QMouseEvent* event) final;
+    // Override for context menu on right button click.
     void mouseReleaseEvent(QMouseEvent* event) final;
 public slots:
     // Append song to playlist.

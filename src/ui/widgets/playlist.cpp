@@ -39,6 +39,16 @@ void Playlist::append_song(const Song_row& row)
     playlist_model.append_song(row);
 }
 
+void Playlist::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    if (event->button() == Qt::LeftButton) {
+        event->accept();
+        auto index = indexAt(event->pos());
+        auto row = playlist_model.get_song(index);
+        emit select_song(row);
+    }
+}
+
 void Playlist::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::RightButton) {
@@ -55,10 +65,6 @@ void Playlist::init()
     horizontalHeader()->setStretchLastSection(true);
     verticalHeader()->setVisible(false);
     setModel(&playlist_model);
-    connect(this, &QTableView::doubleClicked, [=](const QModelIndex& index) {
-        auto row = playlist_model.get_song(index);
-        emit select_song(row);
-    });
     connect(&playlist_model, &Playlist_model::drop_file, [=](const QUrl& url) {
         emit drop_file(url);
     });
