@@ -68,6 +68,11 @@ Database::Database(QSqlDatabase db)
 {
 }
 
+Database::~Database()
+{
+    db.close();
+}
+
 QList<Song_row> Database::select_songs(long playlist)
 {
     QList<Song_row> rows;

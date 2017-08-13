@@ -31,6 +31,8 @@ public:
 
     // Create database with opened and ready to use QSqlDatabase.
     explicit Database(QSqlDatabase db);
+    // Close database.
+    ~Database();
 
     // Return all songs in specified playlist.
     QList<Song_row> select_songs(long playlist);
