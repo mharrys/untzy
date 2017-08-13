@@ -18,19 +18,33 @@
 
 #include "core/volume.h"
 
-#include <QSlider>
+#include <QWidget>
 
-class Volume_slider : public QSlider
+// The responsibility of this class is to provide a widget to control the
+// volume level.
+//
+// This is a complete custom widget that works as a QSlider but instead with
+// an apperance that look more like a volume slider. The user can hover over
+// the widget and use the scroll wheel to either increase or decrease the
+// volume level, or click and drag to desired volume level.
+class Volume_slider : public QWidget
 {
     Q_OBJECT
 public:
     explicit Volume_slider(QWidget* parent = 0);
+    // change volume on mouse clicks, mouse scroll and movements
+    void wheelEvent(QWheelEvent* event) final;
+    void mouseMoveEvent(QMouseEvent* event) final;
+    void mousePressEvent(QMouseEvent* event) final;
+    // custom triangle volume slider
+    void paintEvent(QPaintEvent* paint_event) final;
 signals:
     void changed_volume(const Volume& volume);
 private:
     void init();
-    void value_changed(int value);
+    void new_level(double lvl);
 
+    bool left_down;
     Volume volume;
 };
 
