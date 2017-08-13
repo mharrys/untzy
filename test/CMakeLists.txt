@@ -4,6 +4,7 @@ include_directories(../src)
 
 add_executable(${PROJECT_NAME}
     run_all_tests.cpp
+    db_test.cpp
     duration_test.cpp
     volume_test.cpp)
 
