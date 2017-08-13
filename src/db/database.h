@@ -51,6 +51,9 @@ public:
     void delete_song(long song);
     // Delete playlist (and all songs that belongs to it).
     void delete_playlist(long playlist);
+
+    // Delete all songs and playlists. Only available for unit testing.
+    void clear();
 private:
     QSqlDatabase db;
 };

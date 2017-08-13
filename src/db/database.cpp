@@ -198,3 +198,12 @@ void Database::delete_playlist(long playlist)
     if (!query.exec())
         THROW_QUERY_ERR
 }
+
+void Database::clear()
+{
+    QSqlQuery query;
+    if (!query.exec("DELETE FROM songs"))
+        THROW_QUERY_ERR
+    if (!query.exec("DELETE FROM playlists"))
+        THROW_QUERY_ERR
+}
